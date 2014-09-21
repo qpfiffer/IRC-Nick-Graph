@@ -5,14 +5,14 @@ using namespace FuckNamespaces;
 //    return this->val == other.getVal();
 //}
 
-StringToInt read_line(const char *buf, const unsigned int offset) {
+StringToInt read_line(const unsigned char *buf, const unsigned int offset) {
     // Read until a null or newline char
     std::string to_return;
-    int read = 0;
+    unsigned int read = 0;
+    char c = '\0';
     while (true) {
-        char c = '\0';
         c = buf[read + offset];
-        to_return.append(&c);
+        to_return += c;
         read++;
         if (c == '\0' || c == '\n')
             break;
@@ -21,7 +21,7 @@ StringToInt read_line(const char *buf, const unsigned int offset) {
     return std::make_tuple(to_return, read);
 }
 
-Graph *parse(const char *mmapd_log_file, const size_t length) {
+Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
     unsigned int i = 0;
     unsigned int total_read = 0;
     Graph *king = new Graph();
@@ -34,10 +34,13 @@ Graph *parse(const char *mmapd_log_file, const size_t length) {
         if (line_str->find(" has joined ") != std::string::npos ||
             line_str->find(" is now known as ") != std::string::npos) {
             printf("Got a hit with: %s", line_str->c_str());
+        } else {
+            //printf("%s", line_str->c_str());
         }
+
     }
 
-    return 0;
+    return king;
 }
 
 int main(int argc, char *argv[]) {
@@ -58,7 +61,7 @@ int main(int argc, char *argv[]) {
     }
 
     void *mmapd_log_file = mmap(NULL, sb.st_size, PROT_READ, MAP_SHARED, log_file, 0);
-    Graph *king = parse((const char *)mmapd_log_file, sb.st_size);
+    Graph *king = parse((const unsigned char *)mmapd_log_file, sb.st_size);
 
     munmap(mmapd_log_file, sb.st_size);
     close(log_file);
