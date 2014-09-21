@@ -10,21 +10,62 @@
 #include <string>
 #include <tuple>
 
-class Edge;
+// this looks so fucked up with the namespacing because C++.
+namespace FuckNamespaces {
+    class Node;
 
-class Node {
-    private:
-        std::unordered_set<Edge> edges;
-};
+    class Edge {
+        public:
+            Edge(): val(""), from(NULL), to(NULL) {};
 
-class Edge {
-    private:
-        std::unordered_set<Node> nodes;
-};
+            std::string getVal() const {
+                return this->val;
+            };
+            bool operator==(const Edge &other);
+        private:
+            std::string val;
+            Node *from, *to;
+    };
+}
+namespace std {
+    template <> struct hash<FuckNamespaces::Edge> {
+        size_t operator()(const FuckNamespaces::Edge &edge) const {
+            return std::hash<std::string>()(edge.getVal());
+        }
+    };
+}
 
-class Graph {
-    private:
-        std::unordered_set<Node> nodes;
-};
+namespace FuckNamespaces {
+    class Node {
+        public:
+            std::string getName() const {
+                return this->name;
+            };
 
-typedef std::tuple<std::string, int> StringToInt;
+            bool operator==(const Node &other) const {
+                return this->name == other.getName();
+            };
+        private:
+            std::string name;
+            std::unordered_set<Edge> edges;
+    };
+}
+
+namespace std {
+    template <> struct hash <FuckNamespaces::Node> {
+        size_t operator()(const FuckNamespaces::Node &node) const {
+            return std::hash<std::string>()(node.getName());
+        }
+    };
+}
+
+namespace FuckNamespaces {
+
+    class Graph {
+        private:
+            std::unordered_set<Node> nodes;
+    };
+
+    typedef std::tuple<std::string, int> StringToInt;
+}
+

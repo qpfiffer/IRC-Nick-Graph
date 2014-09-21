@@ -1,4 +1,9 @@
 #include "nick_normalize.h"
+using namespace FuckNamespaces;
+
+//bool Edge::operator==(const Edge &other) {
+//    return this->val == other.getVal();
+//}
 
 StringToInt read_line(const char *buf, const unsigned int offset) {
     // Read until a null or newline char

@@ -1,5 +1,5 @@
 FLAGS=-std=c++0x -O2
-CC=g++
+CC=clang++
 NAME=nick_normalize
 
 all:
