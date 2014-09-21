@@ -4,6 +4,13 @@ using namespace FuckNamespaces;
 #define JOINED_OFFSET 24
 #define KNOWN_AS_OFFSET 23
 
+void Graph::addNode(const Node &node) {
+    this->nodes.insert(node);
+}
+
+const size_t Graph::getNodeCount() {
+    return this->nodes.size();
+};
 StringToInt read_line(const unsigned char *buf, const unsigned int offset) {
     // Read until a null or newline char
     std::string to_return;
@@ -44,7 +51,8 @@ Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
             }
 
             printf("Joined: %s\n", to_graph.c_str());
-            continue;
+            Node new_person(to_graph);
+            king->addNode(new_person);
         } else if (known_as != std::string::npos) {
             std::string nick = line_str->substr(KNOWN_AS_OFFSET);
             std::string from_nick, to_nick;
@@ -87,7 +95,7 @@ int main(int argc, char *argv[]) {
 
     void *mmapd_log_file = mmap(NULL, sb.st_size, PROT_READ, MAP_SHARED, log_file, 0);
     Graph *king = parse((const unsigned char *)mmapd_log_file, sb.st_size);
-    printf("Parsed.\n");
+    printf("Parsed. Have %zu nodes and -1 edges.\n", king->getNodeCount());
 
     munmap(mmapd_log_file, sb.st_size);
     close(log_file);

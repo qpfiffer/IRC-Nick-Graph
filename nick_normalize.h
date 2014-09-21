@@ -44,6 +44,7 @@ namespace std {
 namespace FuckNamespaces {
     class Node {
         public:
+            Node(std::string name): name(name), edges() {};
             std::string getName() const {
                 return this->name;
             };
@@ -68,6 +69,9 @@ namespace std {
 namespace FuckNamespaces {
 
     class Graph {
+        public:
+            void addNode(const Node &node);
+            const size_t getNodeCount();
         private:
             std::unordered_set<Node> nodes;
     };
