@@ -1,6 +1,8 @@
 #include "nick_normalize.h"
 using namespace FuckNamespaces;
 
+#define NICK_OFFSET 24
+
 StringToInt read_line(const unsigned char *buf, const unsigned int offset) {
     // Read until a null or newline char
     std::string to_return;
@@ -30,9 +32,20 @@ Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
         size_t known_as = line_str->find(" is now known as ");
         size_t joined = line_str->find(" has joined ");
 
-        if (joined != std::string::npos || known_as != std::string::npos) {
-        }
+        if (joined != std::string::npos) {
+            std::string nick = line_str->substr(NICK_OFFSET);
+            std::string to_graph;
 
+            for (auto it = nick.begin(); it != nick.end(); it++) {
+                to_graph += *it;
+                if (*it == ' ')
+                    break;
+            }
+
+            printf("Joined: %s\n", to_graph.c_str());
+            continue;
+        } else if (known_as != std::string::npos) {
+        }
     }
 
     return king;
