@@ -1,7 +1,8 @@
 #include "nick_normalize.h"
 using namespace FuckNamespaces;
 
-#define NICK_OFFSET 24
+#define JOINED_OFFSET 24
+#define KNOWN_AS_OFFSET 23
 
 StringToInt read_line(const unsigned char *buf, const unsigned int offset) {
     // Read until a null or newline char
@@ -33,7 +34,7 @@ Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
         size_t joined = line_str->find(" has joined ");
 
         if (joined != std::string::npos) {
-            std::string nick = line_str->substr(NICK_OFFSET);
+            std::string nick = line_str->substr(JOINED_OFFSET);
             std::string to_graph;
 
             for (auto it = nick.begin(); it != nick.end(); it++) {
@@ -45,6 +46,22 @@ Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
             printf("Joined: %s\n", to_graph.c_str());
             continue;
         } else if (known_as != std::string::npos) {
+            std::string nick = line_str->substr(KNOWN_AS_OFFSET);
+            std::string from_nick, to_nick;
+
+            for (auto it = nick.begin(); it != nick.end(); it++) {
+                if (*it == ' ')
+                    break;
+                from_nick += *it;
+            }
+
+            const size_t from_offset = KNOWN_AS_OFFSET + std::strlen(" is now known as ") + from_nick.length();
+            std::string to_nick_begin = line_str->substr(from_offset);
+            for (auto it = to_nick_begin.begin(); it != to_nick_begin.end(); it++) {
+                to_nick += *it;
+            }
+
+            printf("%s turned into %s", from_nick.c_str(), to_nick.c_str());
         }
     }
 
@@ -70,6 +87,7 @@ int main(int argc, char *argv[]) {
 
     void *mmapd_log_file = mmap(NULL, sb.st_size, PROT_READ, MAP_SHARED, log_file, 0);
     Graph *king = parse((const unsigned char *)mmapd_log_file, sb.st_size);
+    printf("Parsed.\n");
 
     munmap(mmapd_log_file, sb.st_size);
     close(log_file);

@@ -1,4 +1,5 @@
 #pragma once
+#include <cstring>
 #include <cstdio>
 #include <fcntl.h>
 #include <sys/mman.h>
