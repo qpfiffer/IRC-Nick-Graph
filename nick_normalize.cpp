@@ -1,10 +1,6 @@
 #include "nick_normalize.h"
 using namespace FuckNamespaces;
 
-//bool Edge::operator==(const Edge &other) {
-//    return this->val == other.getVal();
-//}
-
 StringToInt read_line(const unsigned char *buf, const unsigned int offset) {
     // Read until a null or newline char
     std::string to_return;
@@ -31,11 +27,10 @@ Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
         total_read += std::get<1>(line);
 
         std::string *line_str = &std::get<0>(line);
-        if (line_str->find(" has joined ") != std::string::npos ||
-            line_str->find(" is now known as ") != std::string::npos) {
-            printf("Got a hit with: %s", line_str->c_str());
-        } else {
-            //printf("%s", line_str->c_str());
+        size_t known_as = line_str->find(" is now known as ");
+        size_t joined = line_str->find(" has joined ");
+
+        if (joined != std::string::npos || known_as != std::string::npos) {
         }
 
     }

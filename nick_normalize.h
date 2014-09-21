@@ -17,11 +17,16 @@ namespace FuckNamespaces {
     class Edge {
         public:
             Edge(): val(""), from(NULL), to(NULL) {};
+            Edge(std::string val, Node *from, Node *to):
+                val(val), from(from), to(to) {};
 
             std::string getVal() const {
                 return this->val;
             };
-            bool operator==(const Edge &other);
+
+            bool operator==(const Edge &other) {
+                return this->val == other.getVal();
+            }
         private:
             std::string val;
             Node *from, *to;
