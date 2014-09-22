@@ -6,11 +6,12 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-#include <unordered_map>
-#include <unordered_set>
+#include <cassert>
+#include <iostream>
 #include <sstream>
 #include <string>
 #include <tuple>
+#include <unordered_set>
 #include <vector>
 
 // this looks so fucked up with the namespacing because C++.
@@ -42,11 +43,7 @@ namespace FuckNamespaces {
             const Node *to;
     };
 
-    std::ostream& operator<<(std::ostream& os, const Edge& edge) {
-        const Node *from = edge.getFrom();
-        const Node *to = edge.getTo();
-        return os << from << edge.getVal() << to;
-    }
+    std::ostream& operator<<(std::ostream& os, const Edge& edge);
 }
 namespace std {
     template <> struct hash<FuckNamespaces::Edge> {
@@ -59,6 +56,8 @@ namespace std {
 }
 
 namespace FuckNamespaces {
+    typedef std::pair<std::unordered_set<Edge>::iterator, bool> EdgeInsertResult;
+
     class Node {
         public:
             Node(std::string name): name(name), edges() {};
@@ -74,12 +73,13 @@ namespace FuckNamespaces {
                 return this->edges.size();
             }
 
-            void addEdge(const Edge *edge) {
-                this->edges.insert(edge);
+            EdgeInsertResult addEdge(const Edge &edge) {
+                std::cout << "Adding edge " << edge << "\n";
+                return this->edges.insert(edge);
             }
         private:
             std::string name;
-            std::unordered_set<const Edge*> edges;
+            std::unordered_set<Edge> edges;
     };
 
     std::ostream& operator<<(std::ostream& os, const Node& node) {
@@ -96,11 +96,12 @@ namespace std {
 }
 
 namespace FuckNamespaces {
+    typedef std::pair<std::unordered_set<Node>::iterator, bool> NodeInsertResult;
 
     class Graph {
         public:
-            void addNode(const Node &node);
-            void addEdge(Node &from, Node &to);
+            NodeInsertResult addNode(const Node &node);
+            void addEdge(Node *from, Node *to);
             void printNodes();
             void printAliases();
             const size_t getNodeCount();
