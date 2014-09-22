@@ -56,11 +56,13 @@ namespace std {
 }
 
 namespace FuckNamespaces {
-    typedef std::pair<std::unordered_set<Edge>::iterator, bool> EdgeInsertResult;
+    typedef std::pair<std::unordered_set<Edge *>::iterator, bool> EdgeInsertResult;
 
     class Node {
         public:
-            Node(std::string name): name(name), edges() {};
+            Node(std::string name): name(name), edges() {
+                assert(name.size() > 0);
+            };
             std::string getName() const {
                 return this->name;
             };
@@ -73,13 +75,13 @@ namespace FuckNamespaces {
                 return this->edges.size();
             }
 
-            EdgeInsertResult addEdge(const Edge &edge) {
-                //std::cout << "Adding edge " << edge << "\n";
+            EdgeInsertResult addEdge(Edge *edge) {
+                std::cout << "Adding edge " << edge << "\n";
                 return this->edges.insert(edge);
             }
         private:
             std::string name;
-            std::unordered_set<Edge> edges;
+            std::unordered_set<Edge *> edges;
     };
 
     std::ostream& operator<<(std::ostream& os, const Node& node) {
@@ -96,19 +98,20 @@ namespace std {
 }
 
 namespace FuckNamespaces {
-    typedef std::pair<std::unordered_set<Node>::iterator, bool> NodeInsertResult;
+    typedef std::pair<std::unordered_set<Node *>::iterator, bool> NodeInsertResult;
 
     class Graph {
         public:
-            NodeInsertResult addNode(const Node &node);
+            ~Graph();
+            NodeInsertResult addNode(Node *node);
             void addEdge(Node *from, Node *to);
             void printNodes();
             void printAliases();
             const size_t getNodeCount();
             const size_t getEdgeCount();
         private:
-            std::unordered_set<Node> nodes;
-            std::unordered_set<Edge> edges;
+            std::unordered_set<Node *> nodes;
+            std::unordered_set<Edge *> edges;
     };
 
     typedef std::tuple<std::string, int> StringToInt;

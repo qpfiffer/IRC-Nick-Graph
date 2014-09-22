@@ -4,7 +4,21 @@ using namespace FuckNamespaces;
 #define JOINED_OFFSET 24
 #define KNOWN_AS_OFFSET 23
 
-NodeInsertResult Graph::addNode(const Node &node) {
+Graph::~Graph() {
+    while (!nodes.empty()) {
+        auto it = nodes.begin();
+        FuckNamespaces::Node *node = *it;
+        delete node;
+    }
+
+    while (!edges.empty()) {
+        auto it = edges.begin();
+        FuckNamespaces::Edge *edge = *it;
+        delete edge;
+    }
+}
+
+NodeInsertResult Graph::addNode(Node *node) {
     return this->nodes.insert(node);
 }
 
@@ -14,23 +28,33 @@ void Graph::addEdge(Node *from, Node *to) {
     assert(from != NULL);
 
     // Make sure both nodes are in the graph:
-    NodeInsertResult from_instd_res = this->addNode(*from);
-    NodeInsertResult to_instd_res = this->addNode(*to);
+    NodeInsertResult from_instd_res = this->addNode(from);
+    NodeInsertResult to_instd_res = this->addNode(to);
 
     // Get the actual nodes out of the unordered_set:
     // Fucking C++, look at this:
-    Node from_instd_nd = *(std::get<0>(from_instd_res));
-    Node to_instd_nd = *(std::get<0>(to_instd_res));
+    Node *from_instd_nd = *(std::get<0>(from_instd_res));
+    Node *to_instd_nd = *(std::get<0>(to_instd_res));
 
     // Create a new edge:
-    Edge newEdge("became", from, to);
+    Edge *newEdge = new Edge("became", from, to);
     EdgeInsertResult edge_instd_res = this->edges.insert(newEdge);
 
     // Get the actual edge from the unordered_set:
-    Edge edge_instd = *(std::get<0>(edge_instd_res));
+    Edge *edge_instd = *(std::get<0>(edge_instd_res));
 
-    from_instd_nd.addEdge(edge_instd);
-    to_instd_nd.addEdge(edge_instd);
+    from_instd_nd->addEdge(edge_instd);
+    to_instd_nd->addEdge(edge_instd);
+
+    // If we didn't actually insert them, delete them:
+    if (!std::get<1>(edge_instd_res))
+        delete newEdge;
+
+    if (!std::get<1>(from_instd_res))
+        delete from_instd_nd;
+
+    if (!std::get<1>(to_instd_res))
+        delete to_instd_nd;
 }
 
 const size_t Graph::getNodeCount() {
@@ -53,18 +77,18 @@ bool Edge::operator==(const Edge &other) const {
 
 void Graph::printNodes() {
     for (auto it = nodes.begin(); it != nodes.end(); it++) {
-        FuckNamespaces::Node node = *it;
-        std::cout << node << "\n";
+        FuckNamespaces::Node *node = *it;
+        std::cout << (*node) << "\n";
     }
 }
 
 void Graph::printAliases() {
     for (auto it = nodes.begin(); it != nodes.end(); it++) {
-        FuckNamespaces::Node node = *it;
+        FuckNamespaces::Node *node = *it;
         //if (node.getEdgeCount() > 0) {
             printf("%s has the following %zu aliases:\n",
-                    node.getName().c_str(),
-                    node.getEdgeCount());
+                    node->getName().c_str(),
+                    node->getEdgeCount());
         //} else {
         //    //printf("%s has no aliases.\n", node.getName().c_str());
         //}
@@ -117,7 +141,7 @@ Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
             }
 
             //printf("Joined: %s\n", to_graph.c_str());
-            Node new_person(to_graph);
+            Node *new_person = new Node(to_graph);
             king->addNode(new_person);
         } else if (known_as != std::string::npos) {
             std::string nick = line_str->substr(KNOWN_AS_OFFSET);
@@ -128,21 +152,21 @@ Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
                     break;
                 from_nick += *it;
             }
-            Node from_person(from_nick);
+            Node *from_person = new Node(from_nick);
 
             const size_t from_offset = KNOWN_AS_OFFSET + std::strlen(" is now known as ") + from_nick.length();
             std::string to_nick_begin = line_str->substr(from_offset);
             for (auto it = to_nick_begin.begin(); it != to_nick_begin.end(); it++) {
-                if (*it == '\n' && *it == ' ')
+                if (*it != '\n' && *it != ' ')
                     to_nick += *it;
                 else
                     break;
             }
-            Node to_person(to_nick);
+            Node *to_person = new Node(to_nick);
 
             // This will add the nodes to the graph implicitly.
             // STAAAAAAAAAAAAAAAAAAAAATTTTEEEE!
-            king->addEdge(&from_person, &to_person);
+            king->addEdge(from_person, to_person);
 
             //printf("%s turned into %s", from_nick.c_str(), to_nick.c_str());
         }
@@ -172,7 +196,7 @@ int main(int argc, char *argv[]) {
     madvise(mmapd_log_file, sb.st_size, MADV_SEQUENTIAL | MADV_WILLNEED);
     Graph *king = parse((const unsigned char *)mmapd_log_file, sb.st_size);
     printf("Parsed. Have %zu nodes and %zu edges.\n", king->getNodeCount(), king->getEdgeCount());
-    //king->printNodes();
+    king->printNodes();
     //king->printAliases();
 
     munmap(mmapd_log_file, sb.st_size);
