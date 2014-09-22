@@ -11,6 +11,7 @@
 #include <sstream>
 #include <string>
 #include <tuple>
+#include <vector>
 
 // this looks so fucked up with the namespacing because C++.
 namespace FuckNamespaces {
@@ -50,7 +51,9 @@ namespace FuckNamespaces {
 namespace std {
     template <> struct hash<FuckNamespaces::Edge> {
         size_t operator()(const FuckNamespaces::Edge &edge) const {
-            return std::hash<std::string>()(edge.getVal());
+            std::stringstream val;
+            val << edge;
+            return std::hash<std::string>()(val.str());
         }
     };
 }
@@ -66,9 +69,17 @@ namespace FuckNamespaces {
             bool operator==(const Node &other) const {
                 return this->name == other.getName();
             }
+
+            const size_t getEdgeCount() const {
+                return this->edges.size();
+            }
+
+            void addEdge(const Edge *edge) {
+                this->edges.insert(edge);
+            }
         private:
             std::string name;
-            std::unordered_set<Edge> edges;
+            std::unordered_set<const Edge*> edges;
     };
 
     std::ostream& operator<<(std::ostream& os, const Node& node) {
@@ -89,8 +100,9 @@ namespace FuckNamespaces {
     class Graph {
         public:
             void addNode(const Node &node);
-            void addEdge(const Node &from, const Node &to);
+            void addEdge(Node &from, Node &to);
             void printNodes();
+            void printAliases();
             const size_t getNodeCount();
             const size_t getEdgeCount();
         private:

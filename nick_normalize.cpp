@@ -8,12 +8,15 @@ void Graph::addNode(const Node &node) {
     this->nodes.insert(node);
 }
 
-void Graph::addEdge(const Node &from, const Node &to) {
+void Graph::addEdge(Node &from, Node &to) {
     this->addNode(from);
     this->addNode(to);
 
     Edge newEdge("became", &from, &to);
     this->edges.insert(newEdge);
+
+    from.addEdge(&newEdge);
+    to.addEdge(&newEdge);
 }
 
 const size_t Graph::getNodeCount() {
@@ -38,6 +41,19 @@ void Graph::printNodes() {
     for (auto it = nodes.begin(); it != nodes.end(); it++) {
         FuckNamespaces::Node node = *it;
         printf("%s\n", node.getName().c_str());
+    }
+}
+
+void Graph::printAliases() {
+    for (auto it = nodes.begin(); it != nodes.end(); it++) {
+        FuckNamespaces::Node node = *it;
+        //if (node.getEdgeCount() > 0) {
+            printf("%s has the following %zu aliases:\n",
+                    node.getName().c_str(),
+                    node.getEdgeCount());
+        //} else {
+        //    //printf("%s has no aliases.\n", node.getName().c_str());
+        //}
     }
 }
 
@@ -75,9 +91,9 @@ Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
             std::string to_graph;
 
             for (auto it = nick.begin(); it != nick.end(); it++) {
-                to_graph += *it;
                 if (*it == ' ')
                     break;
+                to_graph += *it;
             }
 
             //printf("Joined: %s\n", to_graph.c_str());
@@ -97,7 +113,10 @@ Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
             const size_t from_offset = KNOWN_AS_OFFSET + std::strlen(" is now known as ") + from_nick.length();
             std::string to_nick_begin = line_str->substr(from_offset);
             for (auto it = to_nick_begin.begin(); it != to_nick_begin.end(); it++) {
-                to_nick += *it;
+                if (*it == '\n' && *it == ' ')
+                    to_nick += *it;
+                else
+                    break;
             }
             Node to_person(to_nick);
 
@@ -132,7 +151,7 @@ int main(int argc, char *argv[]) {
     void *mmapd_log_file = mmap(NULL, sb.st_size, PROT_READ, MAP_SHARED, log_file, 0);
     Graph *king = parse((const unsigned char *)mmapd_log_file, sb.st_size);
     printf("Parsed. Have %zu nodes and %zu edges.\n", king->getNodeCount(), king->getEdgeCount());
-    //king->printNodes();
+    king->printAliases();
 
     munmap(mmapd_log_file, sb.st_size);
     close(log_file);
