@@ -8,9 +8,39 @@ void Graph::addNode(const Node &node) {
     this->nodes.insert(node);
 }
 
+void Graph::addEdge(const Node &from, const Node &to) {
+    this->addNode(from);
+    this->addNode(to);
+
+    Edge newEdge("became", &from, &to);
+    this->edges.insert(newEdge);
+}
+
 const size_t Graph::getNodeCount() {
     return this->nodes.size();
 };
+
+const size_t Graph::getEdgeCount() {
+    return this->edges.size();
+};
+
+bool Edge::operator==(const Edge &other) const {
+    std::stringstream my_stream;
+    my_stream << this;
+
+    std::stringstream other_str;
+    other_str << other;
+
+    return my_stream.str() == other_str.str();
+}
+
+void Graph::printNodes() {
+    for (auto it = nodes.begin(); it != nodes.end(); it++) {
+        FuckNamespaces::Node node = *it;
+        printf("%s\n", node.getName().c_str());
+    }
+}
+
 StringToInt read_line(const unsigned char *buf, const unsigned int offset) {
     // Read until a null or newline char
     std::string to_return;
@@ -50,7 +80,7 @@ Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
                     break;
             }
 
-            printf("Joined: %s\n", to_graph.c_str());
+            //printf("Joined: %s\n", to_graph.c_str());
             Node new_person(to_graph);
             king->addNode(new_person);
         } else if (known_as != std::string::npos) {
@@ -62,14 +92,20 @@ Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
                     break;
                 from_nick += *it;
             }
+            Node from_person(from_nick);
 
             const size_t from_offset = KNOWN_AS_OFFSET + std::strlen(" is now known as ") + from_nick.length();
             std::string to_nick_begin = line_str->substr(from_offset);
             for (auto it = to_nick_begin.begin(); it != to_nick_begin.end(); it++) {
                 to_nick += *it;
             }
+            Node to_person(to_nick);
 
-            printf("%s turned into %s", from_nick.c_str(), to_nick.c_str());
+            // This will add the nodes to the graph implicitly.
+            // STAAAAAAAAAAAAAAAAAAAAATTTTEEEE!
+            king->addEdge(from_person, to_person);
+
+            //printf("%s turned into %s", from_nick.c_str(), to_nick.c_str());
         }
     }
 
@@ -95,7 +131,8 @@ int main(int argc, char *argv[]) {
 
     void *mmapd_log_file = mmap(NULL, sb.st_size, PROT_READ, MAP_SHARED, log_file, 0);
     Graph *king = parse((const unsigned char *)mmapd_log_file, sb.st_size);
-    printf("Parsed. Have %zu nodes and -1 edges.\n", king->getNodeCount());
+    printf("Parsed. Have %zu nodes and %zu edges.\n", king->getNodeCount(), king->getEdgeCount());
+    //king->printNodes();
 
     munmap(mmapd_log_file, sb.st_size);
     close(log_file);

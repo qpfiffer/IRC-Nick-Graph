@@ -8,6 +8,7 @@
 
 #include <unordered_map>
 #include <unordered_set>
+#include <sstream>
 #include <string>
 #include <tuple>
 
@@ -18,20 +19,33 @@ namespace FuckNamespaces {
     class Edge {
         public:
             Edge(): val(""), from(NULL), to(NULL) {};
-            Edge(std::string val, Node *from, Node *to):
+            Edge(std::string val, const Node *from, const Node *to):
                 val(val), from(from), to(to) {};
 
             std::string getVal() const {
                 return this->val;
-            };
-
-            bool operator==(const Edge &other) {
-                return this->val == other.getVal();
             }
+
+            const Node *getFrom() const {
+                return this->from;
+            }
+
+            const Node *getTo() const {
+                return this->to;
+            }
+
+            bool operator==(const Edge &other) const;
         private:
             std::string val;
-            Node *from, *to;
+            const Node *from;
+            const Node *to;
     };
+
+    std::ostream& operator<<(std::ostream& os, const Edge& edge) {
+        const Node *from = edge.getFrom();
+        const Node *to = edge.getTo();
+        return os << from << edge.getVal() << to;
+    }
 }
 namespace std {
     template <> struct hash<FuckNamespaces::Edge> {
@@ -51,11 +65,15 @@ namespace FuckNamespaces {
 
             bool operator==(const Node &other) const {
                 return this->name == other.getName();
-            };
+            }
         private:
             std::string name;
             std::unordered_set<Edge> edges;
     };
+
+    std::ostream& operator<<(std::ostream& os, const Node& node) {
+        return os << node.getName();
+    }
 }
 
 namespace std {
@@ -71,9 +89,13 @@ namespace FuckNamespaces {
     class Graph {
         public:
             void addNode(const Node &node);
+            void addEdge(const Node &from, const Node &to);
+            void printNodes();
             const size_t getNodeCount();
+            const size_t getEdgeCount();
         private:
             std::unordered_set<Node> nodes;
+            std::unordered_set<Edge> edges;
     };
 
     typedef std::tuple<std::string, int> StringToInt;
