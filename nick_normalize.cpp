@@ -54,7 +54,7 @@ bool Edge::operator==(const Edge &other) const {
 void Graph::printNodes() {
     for (auto it = nodes.begin(); it != nodes.end(); it++) {
         FuckNamespaces::Node node = *it;
-        std::cout << node.getName().c_str() << "\n";
+        std::cout << node << "\n";
     }
 }
 

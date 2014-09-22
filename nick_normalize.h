@@ -74,7 +74,7 @@ namespace FuckNamespaces {
             }
 
             EdgeInsertResult addEdge(const Edge &edge) {
-                std::cout << "Adding edge " << edge << "\n";
+                //std::cout << "Adding edge " << edge << "\n";
                 return this->edges.insert(edge);
             }
         private:
@@ -83,7 +83,7 @@ namespace FuckNamespaces {
     };
 
     std::ostream& operator<<(std::ostream& os, const Node& node) {
-        return os << node.getName();
+        return os << node.getName() << ", " << node.getEdgeCount();
     }
 }
 
