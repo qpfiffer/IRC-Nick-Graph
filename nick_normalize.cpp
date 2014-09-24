@@ -43,7 +43,7 @@ void Graph::addEdge(Node *from, Node *to) {
 
     // Create a new edge:
     Edge *newEdge = new Edge("became", from, to);
-    EdgeInsertResult edge_instd_res = this->edges.emplace(newEdge);
+    EdgeInsertResult edge_instd_res = this->edges.insert(newEdge);
 
     // Get the actual edge from the unordered_set:
     Edge *edge_instd = *(std::get<0>(edge_instd_res));
@@ -54,17 +54,17 @@ void Graph::addEdge(Node *from, Node *to) {
     // If we didn't actually insert them, delete them:
     if (!std::get<1>(edge_instd_res)) {
         std::cout << "Duplicate edge.\n";
-        delete newEdge;
+        //delete newEdge;
     }
 
-    if (!std::get<1>(from_instd_res)) {
+    if (std::get<1>(from_instd_res)) {
         std::cout << "Duplicate node.\n";
-        delete from_instd_nd;
+        //delete from_instd_nd;
     }
 
-    if (!std::get<1>(to_instd_res)) {
+    if (std::get<1>(to_instd_res)) {
         std::cout << "Duplicate node.\n";
-        delete to_instd_nd;
+        //delete to_instd_nd;
     }
 }
 
@@ -154,7 +154,7 @@ Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
             //printf("Joined: %s\n", to_graph.c_str());
             Node *new_person = new Node(to_graph);
             king->addNode(new_person);
-        } /*else if (known_as != std::string::npos) {
+        } else if (known_as != std::string::npos) {
             std::string nick = line_str->substr(KNOWN_AS_OFFSET);
             std::string from_nick, to_nick;
 
@@ -180,7 +180,7 @@ Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
             king->addEdge(from_person, to_person);
 
             //printf("%s turned into %s", from_nick.c_str(), to_nick.c_str());
-        }*/
+        }
     }
 
     return king;

@@ -104,7 +104,7 @@ namespace FuckNamespaces {
 
             EdgeInsertResult addEdge(Edge *edge) {
                 std::cout << "Adding edge " << edge << "\n";
-                return this->edges.emplace(edge);
+                return this->edges.insert(edge);
             }
         private:
             std::string *name;
