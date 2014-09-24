@@ -55,17 +55,17 @@ void Graph::addEdge(Node *from, Node *to) {
 
     // If we didn't actually insert them, delete them:
     if (!std::get<1>(edge_instd_res)) {
-        std::cout << "Duplicate edge.\n";
+        //std::cout << "Duplicate edge.\n";
         delete newEdge;
     }
 
     if (!std::get<1>(from_instd_res)) {
-        std::cout << "Duplicate node.\n";
+        //std::cout << "Duplicate node.\n";
         delete from;
     }
 
     if (!std::get<1>(to_instd_res)) {
-        std::cout << "Duplicate node.\n";
+        //std::cout << "Duplicate node.\n";
         delete to;
     }
 }
