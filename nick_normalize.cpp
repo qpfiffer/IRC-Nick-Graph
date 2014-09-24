@@ -198,6 +198,9 @@ Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
             }
             Node *to_person = new Node(to_nick);
 
+            if (from_nick.size() <= 0 || to_nick.size() <= 0)
+                continue;
+
             // This will add the nodes to the graph implicitly.
             // STAAAAAAAAAAAAAAAAAAAAATTTTEEEE!
             king->addEdge(from_person, to_person);
