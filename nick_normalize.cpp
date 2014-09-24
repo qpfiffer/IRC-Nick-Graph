@@ -23,9 +23,9 @@ Graph::~Graph() {
 void Node::printAliases() const {
     for (auto it = edges.begin(); it != edges.end(); it++) {
         const Edge *edge = *it;
-        //if (*this == *edge->getFrom())
-        //    std::cout << "* " << *(edge->getTo()) << "\n";
-        std::cout << "* " << *edge;
+        if (*this == *edge->getFrom())
+            std::cout << "* " << *edge;
+        //std::cout << "* " << *edge;
     }
 }
 
