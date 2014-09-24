@@ -1,9 +1,16 @@
-FLAGS=-std=c++0x -O2
+FLAGS=-std=c++0x -g3
 CC=clang++
 NAME=nick_normalize
 
-all:
-	$(CC) $(FLAGS) -o $(NAME) *.cpp
-	
+%.o: ./src/%.cpp
+	$(CC) $(FLAGS) -c $<
+
+all: common.o edge.o node.o graph.o main.o
+	$(CC) $(FLAGS) -o $(NAME) $^
+
+clean:
+	rm *.o
+	rm $(NAME)
+
 test: all
 	./$(NAME) log.txt
