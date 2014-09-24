@@ -103,7 +103,7 @@ namespace FuckNamespaces {
             }
 
             EdgeInsertResult addEdge(Edge *edge) {
-                std::cout << "Adding edge " << edge << "\n";
+                //std::cout << "Adding edge " << edge << "\n";
                 return this->edges.insert(edge);
             }
         private:

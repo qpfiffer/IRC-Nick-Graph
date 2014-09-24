@@ -21,9 +21,6 @@ Graph::~Graph() {
 }
 
 NodeInsertResult Graph::addNode(Node *node) {
-    //std::unordered_set<Node *>::const_iterator it = this->nodes.find(node);
-    //if (it != this->nodes.end())
-    //    std::cout << "Dupe found\n";
     return this->nodes.insert(node);
 }
 
@@ -52,18 +49,16 @@ void Graph::addEdge(Node *from, Node *to) {
     to_instd_nd->addEdge(edge_instd);
 
     // If we didn't actually insert them, delete them:
-    if (!std::get<1>(edge_instd_res)) {
-        std::cout << "Duplicate edge.\n";
+    if (std::get<1>(edge_instd_res)) {
+        //std::cout << "Duplicate edge.\n";
         //delete newEdge;
     }
 
     if (std::get<1>(from_instd_res)) {
-        std::cout << "Duplicate node.\n";
         //delete from_instd_nd;
     }
 
     if (std::get<1>(to_instd_res)) {
-        std::cout << "Duplicate node.\n";
         //delete to_instd_nd;
     }
 }
@@ -163,7 +158,7 @@ Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
                     break;
                 from_nick += *it;
             }
-            Node *from_person = new Node("Wally");//from_nick);
+            Node *from_person = new Node(from_nick);
 
             const size_t from_offset = KNOWN_AS_OFFSET + std::strlen(" is now known as ") + from_nick.length();
             std::string to_nick_begin = line_str->substr(from_offset);
@@ -173,7 +168,7 @@ Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
                 else
                     break;
             }
-            Node *to_person = new Node("Wally");//to_nick);
+            Node *to_person = new Node(to_nick);
 
             // This will add the nodes to the graph implicitly.
             // STAAAAAAAAAAAAAAAAAAAAATTTTEEEE!
