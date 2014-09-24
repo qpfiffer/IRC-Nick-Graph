@@ -5,6 +5,7 @@ using namespace FuckNamespaces;
 #define KNOWN_AS_OFFSET 23
 
 Graph::~Graph() {
+    /*
     while (!nodes.empty()) {
         auto it = nodes.begin();
         FuckNamespaces::Node *node = *it;
@@ -16,9 +17,13 @@ Graph::~Graph() {
         FuckNamespaces::Edge *edge = *it;
         delete edge;
     }
+    */
 }
 
 NodeInsertResult Graph::addNode(Node *node) {
+    //std::unordered_set<Node *>::const_iterator it = this->nodes.find(node);
+    //if (it != this->nodes.end())
+    //    std::cout << "Dupe found\n";
     return this->nodes.insert(node);
 }
 
@@ -38,7 +43,7 @@ void Graph::addEdge(Node *from, Node *to) {
 
     // Create a new edge:
     Edge *newEdge = new Edge("became", from, to);
-    EdgeInsertResult edge_instd_res = this->edges.insert(newEdge);
+    EdgeInsertResult edge_instd_res = this->edges.emplace(newEdge);
 
     // Get the actual edge from the unordered_set:
     Edge *edge_instd = *(std::get<0>(edge_instd_res));
@@ -47,14 +52,20 @@ void Graph::addEdge(Node *from, Node *to) {
     to_instd_nd->addEdge(edge_instd);
 
     // If we didn't actually insert them, delete them:
-    if (!std::get<1>(edge_instd_res))
+    if (!std::get<1>(edge_instd_res)) {
+        std::cout << "Duplicate edge.\n";
         delete newEdge;
+    }
 
-    if (!std::get<1>(from_instd_res))
+    if (!std::get<1>(from_instd_res)) {
+        std::cout << "Duplicate node.\n";
         delete from_instd_nd;
+    }
 
-    if (!std::get<1>(to_instd_res))
+    if (!std::get<1>(to_instd_res)) {
+        std::cout << "Duplicate node.\n";
         delete to_instd_nd;
+    }
 }
 
 const size_t Graph::getNodeCount() {
@@ -143,7 +154,7 @@ Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
             //printf("Joined: %s\n", to_graph.c_str());
             Node *new_person = new Node(to_graph);
             king->addNode(new_person);
-        } else if (known_as != std::string::npos) {
+        } /*else if (known_as != std::string::npos) {
             std::string nick = line_str->substr(KNOWN_AS_OFFSET);
             std::string from_nick, to_nick;
 
@@ -152,7 +163,7 @@ Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
                     break;
                 from_nick += *it;
             }
-            Node *from_person = new Node(from_nick);
+            Node *from_person = new Node("Wally");//from_nick);
 
             const size_t from_offset = KNOWN_AS_OFFSET + std::strlen(" is now known as ") + from_nick.length();
             std::string to_nick_begin = line_str->substr(from_offset);
@@ -162,14 +173,14 @@ Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
                 else
                     break;
             }
-            Node *to_person = new Node(to_nick);
+            Node *to_person = new Node("Wally");//to_nick);
 
             // This will add the nodes to the graph implicitly.
             // STAAAAAAAAAAAAAAAAAAAAATTTTEEEE!
             king->addEdge(from_person, to_person);
 
             //printf("%s turned into %s", from_nick.c_str(), to_nick.c_str());
-        }
+        }*/
     }
 
     return king;
