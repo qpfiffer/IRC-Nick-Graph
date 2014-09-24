@@ -55,7 +55,8 @@ void Graph::addEdge(Node *from, Node *to) {
     Edge *edge_instd = *(std::get<0>(edge_instd_res));
 
     from_instd_nd->addEdge(edge_instd);
-    to_instd_nd->addEdge(edge_instd);
+    // If this is a non-directed graph, enable this:
+    //to_instd_nd->addEdge(edge_instd);
 
     // If we didn't actually insert them, delete them:
     if (std::get<1>(edge_instd_res)) {
