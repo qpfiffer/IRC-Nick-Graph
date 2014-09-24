@@ -20,6 +20,15 @@ Graph::~Graph() {
     */
 }
 
+void Node::printAliases() const {
+    for (auto it = edges.begin(); it != edges.end(); it++) {
+        const Edge *edge = *it;
+        //if (*this == *edge->getFrom())
+        //    std::cout << "* " << *(edge->getTo()) << "\n";
+        std::cout << "* " << *edge;
+    }
+}
+
 NodeInsertResult Graph::addNode(Node *node) {
     return this->nodes.insert(node);
 }
@@ -91,20 +100,39 @@ void Graph::printNodes() {
 void Graph::printAliases() {
     for (auto it = nodes.begin(); it != nodes.end(); it++) {
         FuckNamespaces::Node *node = *it;
-        //if (node.getEdgeCount() > 0) {
+        if (node->getEdgeCount() > 0) {
             printf("%s has the following %zu aliases:\n",
                     node->getName().c_str(),
                     node->getEdgeCount());
-        //} else {
-        //    //printf("%s has no aliases.\n", node.getName().c_str());
-        //}
+            node->printAliases();
+        } else {
+            //printf("%s has no aliases.\n", node->getName().c_str());
+        }
     }
+}
+
+bool FuckNamespaces::EdgeEqualTo::operator()(const Edge *x, const Edge *y) const {
+    std::stringstream lhs;
+    lhs << *x;
+
+    std::stringstream rhs;
+    rhs << *y;
+
+    const char *rhs_str, *lhs_str;
+    lhs_str = lhs.str().c_str();
+    rhs_str = rhs.str().c_str();
+
+    return lhs.str() == rhs.str();
 }
 
 std::ostream& FuckNamespaces::operator<<(std::ostream& os, const Edge& edge) {
     const Node from = (*edge.getFrom());
     const Node to = (*edge.getTo());
     return os << from << " " << edge.getVal() << " " << to << "\n";
+}
+
+std::ostream& FuckNamespaces::operator<<(std::ostream& os, const Edge *edge) {
+    return os << *edge;
 }
 
 StringToInt read_line(const unsigned char *buf, const unsigned int offset) {
@@ -202,8 +230,8 @@ int main(int argc, char *argv[]) {
     madvise(mmapd_log_file, sb.st_size, MADV_SEQUENTIAL | MADV_WILLNEED);
     Graph *king = parse((const unsigned char *)mmapd_log_file, sb.st_size);
     printf("Parsed. Have %zu nodes and %zu edges.\n", king->getNodeCount(), king->getEdgeCount());
-    king->printNodes();
-    //king->printAliases();
+    //king->printNodes();
+    king->printAliases();
 
     munmap(mmapd_log_file, sb.st_size);
     close(log_file);

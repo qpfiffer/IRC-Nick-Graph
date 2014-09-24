@@ -49,20 +49,13 @@ namespace FuckNamespaces {
     };
 
     typedef struct {
-        bool operator() (const Edge *x, const Edge *y) const {
-            std::stringstream lhs;
-            lhs << x;
-
-            std::stringstream rhs;
-            rhs << y;
-
-            return rhs.str() == lhs.str();
-        }
+        bool operator() (const Edge *x, const Edge *y) const;
     } EdgeEqualTo;
 
     typedef std::unordered_set<Edge *, std::unordered_set<Edge *>::hasher, EdgeEqualTo> EdgeSet;
 
     std::ostream& operator<<(std::ostream& os, const Edge& edge);
+    std::ostream& operator<<(std::ostream& os, const Edge *edge);
 }
 namespace std {
     template <> struct hash<FuckNamespaces::Edge> {
@@ -79,40 +72,37 @@ namespace FuckNamespaces {
 
     class Node {
         public:
-            Node(const std::string &name): name(NULL), edges() {
-                assert(name.size() > 0);
-                this->name = new std::string(name.c_str());
-            };
-            ~Node() {
-                delete this->name;
-            }
+            Node(const std::string name): name(name), edges() {};
             std::string getName() const {
-                return *this->name;
+                return name;
             };
 
             bool operator==(const Node &other) const {
-                return *this->name == other.getName();
+                return name == other.getName();
             }
 
             bool operator==(const Node *other) const {
-                return *this->name == other->getName();
+                return name == other->getName();
             }
 
             const size_t getEdgeCount() const {
                 return this->edges.size();
             }
 
+            void printAliases() const;
+
             EdgeInsertResult addEdge(Edge *edge) {
                 //std::cout << "Adding edge " << edge << "\n";
                 return this->edges.insert(edge);
             }
         private:
-            std::string *name;
+            std::string name;
             EdgeSet edges;
     };
 
     std::ostream& operator<<(std::ostream& os, const Node& node) {
-        return os << node.getName() << ", " << node.getEdgeCount();
+        //return os << node.getName() << ", " << node.getEdgeCount();
+        return os << node.getName();
     }
 }
 
