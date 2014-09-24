@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "edge.h"
 #include "node.h"
 #include "graph.h"
@@ -78,14 +80,14 @@ const size_t Graph::getEdgeCount() {
     return this->edges.size();
 };
 
-void Graph::printNodes() {
+void Graph::printNodes() const {
     for (auto it = nodes.begin(); it != nodes.end(); it++) {
         FuckNamespaces::Node *node = *it;
         std::cout << (*node) << "\n";
     }
 }
 
-void Graph::printAliases() {
+void Graph::printAliases() const {
     for (auto it = nodes.begin(); it != nodes.end(); it++) {
         FuckNamespaces::Node *node = *it;
         if (node->getEdgeCount() > 0) {
@@ -97,4 +99,40 @@ void Graph::printAliases() {
             //printf("%s has no aliases.\n", node->getName().c_str());
         }
     }
+}
+
+void Graph::printSigmaGraphJS() const {
+    std::cout << "{ \"nodes\": [";
+    for (auto it = nodes.begin(); it != nodes.end(); it++) {
+        Node *node = *it;
+        size_t hash = std::hash<Node *>()(node);
+
+        std::string replaced = node->getName();
+        std::replace(replaced.begin(), replaced.end(), '\\', ' ');
+        std::cout   << "{"
+                    << "\"id\": \"n" << hash << "\","
+                    << "\"label\": \"" << replaced << "\"";
+                    //<< "\"x\": 0, \"y\": 0"
+        if (it != nodes.end())
+            std::cout << "},";
+        else
+            std::cout << "}";
+    }
+    std::cout << "], \"edges\": [ ";
+    for (auto it = edges.begin(); it != edges.end(); it++) {
+        Edge *edge = *it;
+        size_t hash = std::hash<Edge *>()(edge);
+        size_t from_hash = std::hash<Node *>()(edge->getFrom());
+        size_t to_hash = std::hash<Node *>()(edge->getTo());
+
+        std::cout   << "{"
+                    << "\"id\": \"n" << hash << "\","
+                    << "\"source\": \"" << from_hash << "\","
+                    << "\"target\": \"" << to_hash << "\"";
+        if (it != edges.end())
+            std::cout << "},";
+        else
+            std::cout << "}";
+    }
+    std::cout << "] }";
 }

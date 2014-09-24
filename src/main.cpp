@@ -98,7 +98,7 @@ int main(int argc, char *argv[]) {
         return 1;
 
     int log_file = open(argv[1], O_RDONLY);
-    printf("Opening %s\n", argv[1]);
+    //printf("Opening %s\n", argv[1]);
     if (log_file < 0) {
         printf("Could not open log file.\n");
         return 1;
@@ -113,9 +113,10 @@ int main(int argc, char *argv[]) {
     void *mmapd_log_file = mmap(NULL, sb.st_size, PROT_READ, MAP_SHARED, log_file, 0);
     madvise(mmapd_log_file, sb.st_size, MADV_SEQUENTIAL | MADV_WILLNEED);
     Graph *king = parse((const unsigned char *)mmapd_log_file, sb.st_size);
-    printf("Parsed. Have %zu nodes and %zu edges.\n", king->getNodeCount(), king->getEdgeCount());
+    //printf("Parsed. Have %zu nodes and %zu edges.\n", king->getNodeCount(), king->getEdgeCount());
     //king->printNodes();
-    king->printAliases();
+    //king->printAliases();
+    king->printSigmaGraphJS();
 
     munmap(mmapd_log_file, sb.st_size);
     close(log_file);

@@ -9,8 +9,9 @@ namespace FuckNamespaces {
             ~Graph();
             NodeInsertResult addNode(Node *node);
             void addEdge(Node *from, Node *to);
-            void printNodes();
-            void printAliases();
+            void printNodes() const;
+            void printAliases() const;
+            void printSigmaGraphJS() const;
             const size_t getNodeCount();
             const size_t getEdgeCount();
         private:
