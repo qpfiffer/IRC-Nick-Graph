@@ -6,28 +6,16 @@ namespace FuckNamespaces {
     class Node {
         public:
             Node(const std::string name): name(name), edges() {};
-            std::string getName() const {
-                return name;
-            };
 
-            bool operator==(const Node &other) const {
-                return name == other.getName();
-            }
+            std::string getName() const;
+            bool operator==(const Node &other) const;
+            bool operator==(const Node *other) const;
 
-            bool operator==(const Node *other) const {
-                return name == other->getName();
-            }
-
-            const size_t getEdgeCount() const {
-                return this->edges.size();
-            }
+            const size_t getEdgeCount() const;
 
             void printAliases() const;
 
-            EdgeInsertResult addEdge(Edge *edge) {
-                //std::cout << "Adding edge " << edge << "\n";
-                return this->edges.insert(edge);
-            }
+            EdgeInsertResult addEdge(Edge *edge);
         private:
             std::string name;
             EdgeSet edges;

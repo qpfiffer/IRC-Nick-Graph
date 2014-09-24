@@ -4,7 +4,12 @@
 #include "graph.h"
 using namespace FuckNamespaces;
 
-typedef std::tuple<std::string, int> StringToInt;
+// The line read and the number of characters read.
+typedef std::tuple<std::string, unsigned int> StringToInt;
+
+// Used for parsing:
+#define JOINED_OFFSET 24
+#define KNOWN_AS_OFFSET 23
 
 StringToInt read_line(const unsigned char *buf, const unsigned int offset) {
     // Read until a null or newline char

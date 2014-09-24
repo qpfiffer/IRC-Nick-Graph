@@ -7,26 +7,13 @@ namespace FuckNamespaces {
 
     class Edge {
         public:
-            Edge(): val(NULL), from(NULL), to(NULL) {};
-            Edge(const std::string &val, const Node *from, const Node *to):
-                val(NULL), from(from), to(to) {
-                this->val = new std::string(val);
-            };
-            ~Edge() {
-                delete this->val;
-            }
+            Edge();
+            Edge(const std::string &val, const Node *from, const Node *to);
+            ~Edge();
 
-            std::string getVal() const {
-                return *this->val;
-            }
-
-            const Node *getFrom() const {
-                return this->from;
-            }
-
-            const Node *getTo() const {
-                return this->to;
-            }
+            std::string getVal() const;
+            const Node *getFrom() const;
+            const Node *getTo() const;
 
             bool operator==(const Edge &other) const;
         private:
