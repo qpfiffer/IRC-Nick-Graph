@@ -51,8 +51,13 @@ Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
             }
 
             //printf("Joined: %s\n", to_graph.c_str());
-            Node *new_person = new Node(to_graph);
-            king->addNode(new_person);
+            //Node *new_person = new Node(to_graph);
+            Node *new_person = new Node("Wally");
+            NodeInsertResult result = king->addNode(new_person);
+
+            if (!std::get<1>(result))
+                delete new_person;
+
         } else if (known_as != std::string::npos) {
             std::string nick = line_str->substr(KNOWN_AS_OFFSET);
             std::string from_nick, to_nick;

@@ -4,23 +4,27 @@
 using namespace FuckNamespaces;
 
 Graph::~Graph() {
-    /*
-    while (!nodes.empty()) {
+    while(!nodes.empty()) {
         auto it = nodes.begin();
-        FuckNamespaces::Node *node = *it;
+        Node *node = *it;
         delete node;
+        nodes.erase(it);
     }
 
-    while (!edges.empty()) {
+    while(!edges.empty()) {
         auto it = edges.begin();
-        FuckNamespaces::Edge *edge = *it;
+        Edge *edge = *it;
         delete edge;
+        edges.erase(it);
     }
-    */
 }
 
 NodeInsertResult Graph::addNode(Node *node) {
-    return this->nodes.insert(node);
+    NodeInsertResult result = this->nodes.insert(node);
+    Node *node_instd = *(std::get<0>(result));
+    bool inserted = std::get<1>(result);
+
+    return result;
 }
 
 void Graph::addEdge(Node *from, Node *to) {
@@ -38,28 +42,31 @@ void Graph::addEdge(Node *from, Node *to) {
     Node *to_instd_nd = *(std::get<0>(to_instd_res));
 
     // Create a new edge:
-    Edge *newEdge = new Edge("became", from, to);
+    Edge *newEdge = new Edge("became", from_instd_nd, to_instd_nd);
     EdgeInsertResult edge_instd_res = this->edges.insert(newEdge);
 
     // Get the actual edge from the unordered_set:
     Edge *edge_instd = *(std::get<0>(edge_instd_res));
 
     from_instd_nd->addEdge(edge_instd);
+
     // If this is a non-directed graph, enable this:
     //to_instd_nd->addEdge(edge_instd);
 
     // If we didn't actually insert them, delete them:
-    if (std::get<1>(edge_instd_res)) {
-        //std::cout << "Duplicate edge.\n";
-        //delete newEdge;
+    if (!std::get<1>(edge_instd_res)) {
+        std::cout << "Duplicate edge.\n";
+        delete newEdge;
     }
 
-    if (std::get<1>(from_instd_res)) {
-        //delete from_instd_nd;
+    if (!std::get<1>(from_instd_res)) {
+        std::cout << "Duplicate node.\n";
+        delete from;
     }
 
-    if (std::get<1>(to_instd_res)) {
-        //delete to_instd_nd;
+    if (!std::get<1>(to_instd_res)) {
+        std::cout << "Duplicate node.\n";
+        delete to;
     }
 }
 
