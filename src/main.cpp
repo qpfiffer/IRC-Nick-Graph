@@ -41,21 +41,27 @@ Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
 
         if (joined != std::string::npos) {
             std::string nick = line_str->substr(JOINED_OFFSET);
-            std::string to_graph;
+            std::string to_graph, room_str;
 
             for (auto it = nick.begin(); it != nick.end(); it++) {
                 if (*it == ' ')
                     break;
                 to_graph += *it;
             }
-
             //printf("Joined: %s\n", to_graph.c_str());
-            //Node *new_person = new Node(to_graph);
-            Node *new_person = new Node("Wally");
-            NodeInsertResult result = king->addNode(new_person);
+            Node *new_person = new Node(to_graph);
 
-            if (!std::get<1>(result))
-                delete new_person;
+            const size_t room_offset = joined + std::strlen(" has joined ");
+            std::string room_offset_begin = line_str->substr(room_offset);
+            for (auto it = room_offset_begin.begin(); it != line_str->end(); it++) {
+                if (*it != '\n' && *it != ' ')
+                    room_str += *it;
+                else
+                    break;
+            }
+            Node *room = new Node(room_str);
+
+            king->addEdge(new_person, room, "joined");
 
         } else if (known_as != std::string::npos) {
             std::string nick = line_str->substr(KNOWN_AS_OFFSET);
@@ -83,7 +89,7 @@ Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
 
             // This will add the nodes to the graph implicitly.
             // STAAAAAAAAAAAAAAAAAAAAATTTTEEEE!
-            king->addEdge(from_person, to_person);
+            king->addEdge(from_person, to_person, "became");
 
             //printf("%s turned into %s", from_nick.c_str(), to_nick.c_str());
         }
@@ -114,8 +120,8 @@ int main(int argc, char *argv[]) {
     Graph *king = parse((const unsigned char *)mmapd_log_file, sb.st_size);
     //printf("Parsed. Have %zu nodes and %zu edges.\n", king->getNodeCount(), king->getEdgeCount());
     //king->printNodes();
-    //king->printAliases();
-    king->printSigmaGraphJS();
+    king->printAliases();
+    //king->printSigmaGraphJS();
 
     munmap(mmapd_log_file, sb.st_size);
     close(log_file);

@@ -29,7 +29,7 @@ NodeInsertResult Graph::addNode(Node *node) {
     return result;
 }
 
-void Graph::addEdge(Node *from, Node *to) {
+void Graph::addEdge(Node *from, Node *to, const std::string &label) {
     // Make sure we're inserting something:
     assert(to != NULL);
     assert(from != NULL);
@@ -44,7 +44,7 @@ void Graph::addEdge(Node *from, Node *to) {
     Node *to_instd_nd = *(std::get<0>(to_instd_res));
 
     // Create a new edge:
-    Edge *newEdge = new Edge("became", from_instd_nd, to_instd_nd);
+    Edge *newEdge = new Edge(label, from_instd_nd, to_instd_nd);
     EdgeInsertResult edge_instd_res = this->edges.insert(newEdge);
 
     // Get the actual edge from the unordered_set:
