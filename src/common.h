@@ -41,13 +41,12 @@ namespace FuckNamespaces {
     // the same address so we define custom functions that check the toString() value.
     // (actually checks << but close enough)
     typedef struct {
-        bool operator() (const Node *x, const Node *y) const;
-    } NodeEqualTo;
-
-
-    typedef struct {
         bool operator() (const Edge *x, const Edge *y) const;
     } EdgeEqualTo;
+
+    typedef struct {
+        bool operator() (const Node *x, const Node *y) const;
+    } NodeEqualTo;
 
     // Set of edges, set of nodes.
     typedef std::unordered_set<Edge *, std::unordered_set<Edge *>::hasher, EdgeEqualTo> EdgeSet;
