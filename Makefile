@@ -1,4 +1,4 @@
-FLAGS=-std=c++0x -g3 -O2
+FLAGS=-std=c++0x -g3 -O2 -Wall
 CC=clang++
 NAME=nick_normalize
 

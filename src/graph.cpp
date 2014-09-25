@@ -23,8 +23,8 @@ Graph::~Graph() {
 
 NodeInsertResult Graph::addNode(Node *node) {
     NodeInsertResult result = this->nodes.insert(node);
-    Node *node_instd = *(std::get<0>(result));
-    bool inserted = std::get<1>(result);
+    //Node *node_instd = *(std::get<0>(result));
+    //bool inserted = std::get<1>(result);
 
     return result;
 }

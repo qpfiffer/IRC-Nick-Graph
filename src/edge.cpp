@@ -47,8 +47,8 @@ bool EdgeEqualTo::operator()(const Edge *x, const Edge *y) const {
     rhs << *y;
     std::string rhs_string(rhs.str());
 
-    const char *lhs_str = lhs_string.c_str();
-    const char *rhs_str = rhs_string.c_str();
+    //const char *lhs_str = lhs_string.c_str();
+    //const char *rhs_str = rhs_string.c_str();
 
     bool result = lhs_string == rhs_string;
     return result;

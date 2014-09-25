@@ -28,7 +28,6 @@ StringToInt read_line(const unsigned char *buf, const unsigned int offset) {
 }
 
 Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
-    unsigned int i = 0;
     unsigned int total_read = 0;
     Graph *king = new Graph();
 
