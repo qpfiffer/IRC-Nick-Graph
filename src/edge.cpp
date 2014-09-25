@@ -28,7 +28,7 @@ const Node *Edge::getTo() const {
 
 bool Edge::operator==(const Edge &other) const {
     std::stringstream my_stream;
-    my_stream << this;
+    my_stream << *this;
     std::string my_str = my_stream.str();
 
     std::stringstream other_stream;
@@ -38,20 +38,12 @@ bool Edge::operator==(const Edge &other) const {
     return my_str == other_str;
 }
 
+bool Edge::operator==(const Edge *other) const {
+    return *this == *other;
+}
+
 bool EdgeEqualTo::operator()(const Edge *x, const Edge *y) const {
-    std::stringstream lhs;
-    lhs << *x;
-    std::string lhs_string(lhs.str());
-
-    std::stringstream rhs;
-    rhs << *y;
-    std::string rhs_string(rhs.str());
-
-    //const char *lhs_str = lhs_string.c_str();
-    //const char *rhs_str = rhs_string.c_str();
-
-    bool result = lhs_string == rhs_string;
-    return result;
+    return *x == *y;
 }
 
 std::ostream& FuckNamespaces::operator<<(std::ostream& os, const Edge& edge) {

@@ -23,8 +23,8 @@ namespace FuckNamespaces {
 
 namespace std {
     // Hashing function declarations for Edge and Node
-    template <> struct hash<FuckNamespaces::Edge> {
-        size_t operator()(const FuckNamespaces::Edge &edge) const;
+    template <> struct hash<FuckNamespaces::Edge *> {
+        size_t operator()(const FuckNamespaces::Edge *edge) const;
     };
 
     template <> struct hash<FuckNamespaces::Node *> {

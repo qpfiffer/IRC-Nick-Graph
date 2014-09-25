@@ -50,10 +50,9 @@ void Graph::addEdge(Node *from, Node *to, const std::string &label) {
     // Get the actual edge from the unordered_set:
     Edge *edge_instd = *(std::get<0>(edge_instd_res));
 
+    // Add the newly created edge to both Nodes:
     from_instd_nd->addEdge(edge_instd);
-
-    // If this is a non-directed graph, enable this:
-    //to_instd_nd->addEdge(edge_instd);
+    to_instd_nd->addEdge(edge_instd);
 
     // If we didn't actually insert them, delete them:
     if (!std::get<1>(edge_instd_res)) {
@@ -82,8 +81,15 @@ const size_t Graph::getEdgeCount() {
 
 void Graph::printNodes() const {
     for (auto it = nodes.begin(); it != nodes.end(); it++) {
-        FuckNamespaces::Node *node = *it;
+        Node *node = *it;
         std::cout << (*node) << "\n";
+    }
+}
+
+void Graph::printEdges() const {
+    for (auto it = edges.begin(); it != edges.end(); it++) {
+        Edge *edge = *it;
+        std::cout << (*edge) << "\n";
     }
 }
 
@@ -95,8 +101,6 @@ void Graph::printAliases() const {
                     node->getName().c_str(),
                     node->getEdgeCount());
             node->printAliases();
-        } else {
-            //printf("%s has no aliases.\n", node->getName().c_str());
         }
     }
 }

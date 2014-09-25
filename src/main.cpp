@@ -120,6 +120,7 @@ int main(int argc, char *argv[]) {
     Graph *king = parse((const unsigned char *)mmapd_log_file, sb.st_size);
     //printf("Parsed. Have %zu nodes and %zu edges.\n", king->getNodeCount(), king->getEdgeCount());
     //king->printNodes();
+    //king->printEdges();
     king->printAliases();
     //king->printSigmaGraphJS();
 

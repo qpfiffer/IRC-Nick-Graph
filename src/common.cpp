@@ -3,9 +3,9 @@
 #include "node.h"
 using namespace std;
 
-size_t hash<FuckNamespaces::Edge>::operator()(const FuckNamespaces::Edge &edge) const {
+size_t hash<FuckNamespaces::Edge *>::operator()(const FuckNamespaces::Edge *edge) const {
     std::stringstream val;
-    val << edge;
+    val << *edge;
     return std::hash<std::string>()(val.str());
 }
 
