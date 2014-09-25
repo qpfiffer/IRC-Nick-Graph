@@ -93,8 +93,6 @@ Graph *parse(const char *mmapd_log_file, const size_t length) {
             // This will add the nodes to the graph implicitly.
             // STAAAAAAAAAAAAAAAAAAAAATTTTEEEE!
             king->addEdge(&from_person, &to_person, "became");
-
-            //printf("%s turned into %s", from_nick.c_str(), to_nick.c_str());
         }
     }
 
