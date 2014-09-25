@@ -52,7 +52,7 @@ Graph *parse(const char *mmapd_log_file, const size_t length) {
                 to_graph += *it;
             }
             //printf("Joined: %s\n", to_graph.c_str());
-            Node *new_person = new Node(to_graph);
+            Node new_person(to_graph);
 
             const size_t room_offset = joined + std::strlen(" has joined ");
             std::string room_offset_begin = line_str->substr(room_offset);
@@ -62,9 +62,9 @@ Graph *parse(const char *mmapd_log_file, const size_t length) {
                 else
                     break;
             }
-            Node *room = new Node(room_str);
+            Node room(room_str);
 
-            king->addEdge(new_person, room, "joined");
+            king->addEdge(&new_person, &room, "joined");
 
         } else if (known_as != std::string::npos) {
             std::string nick = line_str->substr(KNOWN_AS_OFFSET);
@@ -75,7 +75,7 @@ Graph *parse(const char *mmapd_log_file, const size_t length) {
                     break;
                 from_nick += *it;
             }
-            Node *from_person = new Node(from_nick);
+            Node from_person(from_nick);
 
             const size_t from_offset = KNOWN_AS_OFFSET + std::strlen(" is now known as ") + from_nick.length();
             std::string to_nick_begin = line_str->substr(from_offset);
@@ -85,14 +85,14 @@ Graph *parse(const char *mmapd_log_file, const size_t length) {
                 else
                     break;
             }
-            Node *to_person = new Node(to_nick);
+            Node to_person(to_nick);
 
             if (from_nick.size() <= 0 || to_nick.size() <= 0)
                 continue;
 
             // This will add the nodes to the graph implicitly.
             // STAAAAAAAAAAAAAAAAAAAAATTTTEEEE!
-            king->addEdge(from_person, to_person, "became");
+            king->addEdge(&from_person, &to_person, "became");
 
             //printf("%s turned into %s", from_nick.c_str(), to_nick.c_str());
         }

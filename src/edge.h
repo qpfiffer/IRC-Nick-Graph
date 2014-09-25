@@ -8,7 +8,8 @@ namespace FuckNamespaces {
     class Edge {
         public:
             Edge();
-            Edge(const std::string &val, const Node *from, const Node *to);
+            Edge(const Edge *other);
+            Edge(const std::string val, const Node *from, const Node *to);
             ~Edge();
 
             std::string getVal() const;
@@ -18,7 +19,7 @@ namespace FuckNamespaces {
             bool operator==(const Edge &other) const;
             bool operator==(const Edge *other) const;
         private:
-            std::string *val;
+            std::string val;
             const Node *from;
             const Node *to;
     };

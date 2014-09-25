@@ -2,8 +2,17 @@
 #include "node.h"
 using namespace FuckNamespaces;
 
+Node::Node(const Node *other):
+    name(other->getName()), edges(other->getEdges())
+{
+}
+
 std::string Node::getName() const {
     return name;
+}
+
+EdgeSet Node::getEdges() const {
+    return this->edges;
 }
 
 bool Node::operator==(const Node &other) const {

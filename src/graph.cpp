@@ -22,11 +22,21 @@ Graph::~Graph() {
 }
 
 NodeInsertResult Graph::addNode(Node *node) {
-    NodeInsertResult result = this->nodes.insert(node);
-    //Node *node_instd = *(std::get<0>(result));
-    //bool inserted = std::get<1>(result);
+    if (this->nodes.find(node) == this->nodes.end()) {
+        Node *copiedNode = new Node(node);
+        return this->nodes.insert(copiedNode);
+    }
 
-    return result;
+    return this->nodes.insert(node);
+}
+
+EdgeInsertResult Graph::insertEdge(Edge *edge) {
+    if (this->edges.find(edge) == this->edges.end()) {
+        Edge *copied = new Edge(edge);
+        return this->edges.insert(copied);
+    }
+
+    return this->edges.insert(edge);
 }
 
 void Graph::addEdge(Node *from, Node *to, const std::string &label) {
@@ -44,8 +54,8 @@ void Graph::addEdge(Node *from, Node *to, const std::string &label) {
     Node *to_instd_nd = *(std::get<0>(to_instd_res));
 
     // Create a new edge:
-    Edge *newEdge = new Edge(label, from_instd_nd, to_instd_nd);
-    EdgeInsertResult edge_instd_res = this->edges.insert(newEdge);
+    Edge newEdge(label, from_instd_nd, to_instd_nd);
+    EdgeInsertResult edge_instd_res = this->insertEdge(&newEdge);
 
     // Get the actual edge from the unordered_set:
     Edge *edge_instd = *(std::get<0>(edge_instd_res));
@@ -57,17 +67,7 @@ void Graph::addEdge(Node *from, Node *to, const std::string &label) {
     // If we didn't actually insert them, delete them:
     if (!std::get<1>(edge_instd_res)) {
         //std::cout << "Duplicate edge.\n";
-        delete newEdge;
-    }
-
-    if (!std::get<1>(from_instd_res)) {
-        //std::cout << "Duplicate node.\n";
-        delete from;
-    }
-
-    if (!std::get<1>(to_instd_res)) {
-        //std::cout << "Duplicate node.\n";
-        delete to;
+        //delete newEdge;
     }
 }
 

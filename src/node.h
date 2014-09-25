@@ -5,9 +5,11 @@ namespace FuckNamespaces {
     class Edge;
     class Node {
         public:
+            Node(const Node *other);
             Node(const std::string name): name(name), edges() {};
 
             std::string getName() const;
+            EdgeSet getEdges() const;
             bool operator==(const Node &other) const;
             bool operator==(const Node *other) const;
 

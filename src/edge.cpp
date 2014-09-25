@@ -5,17 +5,20 @@ using namespace FuckNamespaces;
 Edge::Edge(): val(NULL), from(NULL), to(NULL) {
 }
 
-Edge::Edge(const std::string &val, const Node *from, const Node *to):
-    val(NULL), from(from), to(to) {
-    this->val = new std::string(val);
+Edge::Edge(const Edge *other):
+    val(other->getVal()), from(other->getFrom()), to(other->getTo())
+{
+}
+
+Edge::Edge(const std::string val, const Node *from, const Node *to):
+    val(val), from(from), to(to) {
 }
 
 Edge::~Edge() {
-    delete this->val;
 }
 
 std::string Edge::getVal() const {
-    return *this->val;
+    return this->val;
 }
 
 const Node *Edge::getFrom() const {
