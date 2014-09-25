@@ -5,34 +5,37 @@
 using namespace FuckNamespaces;
 
 // The line read and the number of characters read.
-typedef std::tuple<std::string, unsigned int> StringToInt;
+typedef std::tuple<std::string, size_t> StringToSizeT;
 
 // Used for parsing:
 #define JOINED_OFFSET 24
 #define KNOWN_AS_OFFSET 23
 
-StringToInt read_line(const unsigned char *buf, const unsigned int offset) {
+StringToSizeT read_line(const char *buf, const size_t offset) {
     // Read until a null or newline char
-    std::string to_return;
-    unsigned int read = 0;
+    size_t read = 0;
     char c = '\0';
+
+    // Get a pointer to the start position in the array:
+    const char *start_buf = buf + offset;
+
     while (true) {
         c = buf[read + offset];
-        to_return += c;
         read++;
         if (c == '\0' || c == '\n')
             break;
     }
+    std::string to_return(start_buf, read);
 
     return std::make_tuple(to_return, read);
 }
 
-Graph *parse(const unsigned char *mmapd_log_file, const size_t length) {
-    unsigned int total_read = 0;
+Graph *parse(const char *mmapd_log_file, const size_t length) {
+    size_t total_read = 0;
     Graph *king = new Graph();
 
     while (total_read < length) {
-        StringToInt line = read_line(mmapd_log_file, total_read);
+        StringToSizeT line = read_line(mmapd_log_file, total_read);
         total_read += std::get<1>(line);
 
         std::string *line_str = &std::get<0>(line);
@@ -117,7 +120,7 @@ int main(int argc, char *argv[]) {
 
     void *mmapd_log_file = mmap(NULL, sb.st_size, PROT_READ, MAP_SHARED, log_file, 0);
     madvise(mmapd_log_file, sb.st_size, MADV_SEQUENTIAL | MADV_WILLNEED);
-    Graph *king = parse((const unsigned char *)mmapd_log_file, sb.st_size);
+    Graph *king = parse((const char *)mmapd_log_file, sb.st_size);
     //printf("Parsed. Have %zu nodes and %zu edges.\n", king->getNodeCount(), king->getEdgeCount());
     //king->printNodes();
     //king->printEdges();
