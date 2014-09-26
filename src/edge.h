@@ -18,8 +18,9 @@ namespace FuckNamespaces {
 
             bool operator==(const Edge &other) const;
             bool operator==(const Edge *other) const;
+            const std::string toString() const;
         private:
-            std::string val;
+            const std::string val;
             const Node *from;
             const Node *to;
     };
