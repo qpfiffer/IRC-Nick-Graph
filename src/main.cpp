@@ -122,8 +122,8 @@ int main(int argc, char *argv[]) {
     //printf("Parsed. Have %zu nodes and %zu edges.\n", king->getNodeCount(), king->getEdgeCount());
     //king->printNodes();
     //king->printEdges();
-    king->printAliases();
-    //king->printSigmaGraphJS();
+    //king->printAliases();
+    king->printSigmaGraphJS();
 
     munmap(mmapd_log_file, sb.st_size);
     close(log_file);

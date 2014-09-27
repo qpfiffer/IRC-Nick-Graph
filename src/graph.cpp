@@ -106,37 +106,37 @@ void Graph::printAliases() const {
 }
 
 void Graph::printSigmaGraphJS() const {
-    std::cout << "{ \"nodes\": [";
+    std::cout   << "{ \"nodes\": [";
     for (auto it = nodes.begin(); it != nodes.end(); it++) {
+        if (it != nodes.begin())
+            std::cout << ",";
         Node *node = *it;
         size_t hash = std::hash<Node *>()(node);
-
         std::string replaced = node->getName();
         std::replace(replaced.begin(), replaced.end(), '\\', ' ');
-        std::cout   << "{"
-                    << "\"id\": \"n" << hash << "\","
-                    << "\"label\": \"" << replaced << "\"";
-                    //<< "\"x\": 0, \"y\": 0"
-        if (it != nodes.end())
-            std::cout << "},";
-        else
-            std::cout << "}";
+        std::replace(replaced.begin(), replaced.end(), '\t', ' ');
+        std::cout   << "{\n"
+                    << "    \"id\": \"n" << hash << "\",\n"
+                    << "    \"label\": \"" << replaced << "\",\n"
+                    << "    \"x\": " << hash % 200 << ",\n"
+                    << "    \"y\": " << hash % 167 << ",\n"
+                    << "    \"size\": 1\n"
+                    << "}\n";
     }
-    std::cout << "], \"edges\": [ ";
+    std::cout << "], \"edges\": [ \n";
     for (auto it = edges.begin(); it != edges.end(); it++) {
+        if (it != edges.begin())
+            std::cout << ",";
         Edge *edge = *it;
         size_t hash = std::hash<Edge *>()(edge);
         size_t from_hash = std::hash<Node *>()(edge->getFrom());
         size_t to_hash = std::hash<Node *>()(edge->getTo());
 
-        std::cout   << "{"
-                    << "\"id\": \"n" << hash << "\","
-                    << "\"source\": \"" << from_hash << "\","
-                    << "\"target\": \"" << to_hash << "\"";
-        if (it != edges.end())
-            std::cout << "},";
-        else
-            std::cout << "}";
+        std::cout   << "{\n"
+                    << "    \"id\": \"e" << hash << "\",\n"
+                    << "    \"source\": \"n" << from_hash << "\",\n"
+                    << "    \"target\": \"n" << to_hash << "\"\n";
+        std::cout << "}\n";
     }
     std::cout << "] }";
 }
