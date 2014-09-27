@@ -115,12 +115,13 @@ void Graph::printSigmaGraphJS() const {
         std::string replaced = node->getName();
         std::replace(replaced.begin(), replaced.end(), '\\', ' ');
         std::replace(replaced.begin(), replaced.end(), '\t', ' ');
+        std::replace(replaced.begin(), replaced.end(), '"', '\'');
         std::cout   << "{\n"
                     << "    \"id\": \"n" << hash << "\",\n"
                     << "    \"label\": \"" << replaced << "\",\n"
-                    << "    \"x\": " << hash % 200 << ",\n"
-                    << "    \"y\": " << hash % 167 << ",\n"
-                    << "    \"size\": 1\n"
+                    << "    \"x\": " << hash % 431 << ",\n"
+                    << "    \"y\": " << hash % 467 << ",\n"
+                    << "    \"size\": 0.2\n"
                     << "}\n";
     }
     std::cout << "], \"edges\": [ \n";
