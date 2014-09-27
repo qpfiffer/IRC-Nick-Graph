@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "common.h"
 #include "edge.h"
 #include "node.h"
@@ -10,6 +12,58 @@ typedef std::tuple<std::string, size_t> StringToSizeT;
 // Used for parsing:
 #define JOINED_OFFSET 24
 #define KNOWN_AS_OFFSET 23
+
+class AliasGraph: public Graph {
+    public:
+        void printAliases() const {
+            for (auto it = nodes.begin(); it != nodes.end(); it++) {
+                FuckNamespaces::Node *node = *it;
+                if (node->getEdgeCount() > 0) {
+                    printf("%s has the following %zu aliases:\n",
+                            node->getName().c_str(),
+                            node->getEdgeCount());
+                    node->printAliases();
+                }
+            }
+        }
+
+    void printSigmaGraphJS() const {
+        std::cout   << "{ \"nodes\": [";
+        for (auto it = nodes.begin(); it != nodes.end(); it++) {
+            if (it != nodes.begin())
+                std::cout << ",";
+            Node *node = *it;
+            size_t hash = std::hash<Node *>()(node);
+            std::string replaced = node->getName();
+            std::replace(replaced.begin(), replaced.end(), '\\', ' ');
+            std::replace(replaced.begin(), replaced.end(), '\t', ' ');
+            std::replace(replaced.begin(), replaced.end(), '"', '\'');
+            std::cout   << "{\n"
+                        << "    \"id\": \"n" << hash << "\",\n"
+                        << "    \"label\": \"" << replaced << "\",\n"
+                        << "    \"x\": " << hash % 431 << ",\n"
+                        << "    \"y\": " << hash % 467 << ",\n"
+                        << "    \"size\": 0.2\n"
+                        << "}\n";
+        }
+        std::cout << "], \"edges\": [ \n";
+        for (auto it = edges.begin(); it != edges.end(); it++) {
+            if (it != edges.begin())
+                std::cout << ",";
+            Edge *edge = *it;
+            size_t hash = std::hash<Edge *>()(edge);
+            size_t from_hash = std::hash<Node *>()(edge->getFrom());
+            size_t to_hash = std::hash<Node *>()(edge->getTo());
+
+            std::cout   << "{\n"
+                        << "    \"id\": \"e" << hash << "\",\n"
+                        << "    \"source\": \"n" << from_hash << "\",\n"
+                        << "    \"target\": \"n" << to_hash << "\"\n";
+            std::cout << "}\n";
+        }
+        std::cout << "] }";
+    }
+};
 
 StringToSizeT read_line(const char *buf, const size_t offset) {
     // Read until a null or newline char
@@ -30,9 +84,9 @@ StringToSizeT read_line(const char *buf, const size_t offset) {
     return std::make_tuple(to_return, read);
 }
 
-Graph *parse(const char *mmapd_log_file, const size_t length) {
+AliasGraph *parse(const char *mmapd_log_file, const size_t length) {
     size_t total_read = 0;
-    Graph *king = new Graph();
+    AliasGraph *king = new AliasGraph();
 
     while (total_read < length) {
         StringToSizeT line = read_line(mmapd_log_file, total_read);
@@ -118,7 +172,7 @@ int main(int argc, char *argv[]) {
 
     void *mmapd_log_file = mmap(NULL, sb.st_size, PROT_READ, MAP_SHARED, log_file, 0);
     madvise(mmapd_log_file, sb.st_size, MADV_SEQUENTIAL | MADV_WILLNEED);
-    Graph *king = parse((const char *)mmapd_log_file, sb.st_size);
+    AliasGraph *king = parse((const char *)mmapd_log_file, sb.st_size);
     //printf("Parsed. Have %zu nodes and %zu edges.\n", king->getNodeCount(), king->getEdgeCount());
     //king->printNodes();
     //king->printEdges();

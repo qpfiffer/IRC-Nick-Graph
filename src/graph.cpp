@@ -1,5 +1,3 @@
-#include <algorithm>
-
 #include "edge.h"
 #include "node.h"
 #include "graph.h"
@@ -91,53 +89,4 @@ void Graph::printEdges() const {
         Edge *edge = *it;
         std::cout << (*edge) << "\n";
     }
-}
-
-void Graph::printAliases() const {
-    for (auto it = nodes.begin(); it != nodes.end(); it++) {
-        FuckNamespaces::Node *node = *it;
-        if (node->getEdgeCount() > 0) {
-            printf("%s has the following %zu aliases:\n",
-                    node->getName().c_str(),
-                    node->getEdgeCount());
-            node->printAliases();
-        }
-    }
-}
-
-void Graph::printSigmaGraphJS() const {
-    std::cout   << "{ \"nodes\": [";
-    for (auto it = nodes.begin(); it != nodes.end(); it++) {
-        if (it != nodes.begin())
-            std::cout << ",";
-        Node *node = *it;
-        size_t hash = std::hash<Node *>()(node);
-        std::string replaced = node->getName();
-        std::replace(replaced.begin(), replaced.end(), '\\', ' ');
-        std::replace(replaced.begin(), replaced.end(), '\t', ' ');
-        std::replace(replaced.begin(), replaced.end(), '"', '\'');
-        std::cout   << "{\n"
-                    << "    \"id\": \"n" << hash << "\",\n"
-                    << "    \"label\": \"" << replaced << "\",\n"
-                    << "    \"x\": " << hash % 431 << ",\n"
-                    << "    \"y\": " << hash % 467 << ",\n"
-                    << "    \"size\": 0.2\n"
-                    << "}\n";
-    }
-    std::cout << "], \"edges\": [ \n";
-    for (auto it = edges.begin(); it != edges.end(); it++) {
-        if (it != edges.begin())
-            std::cout << ",";
-        Edge *edge = *it;
-        size_t hash = std::hash<Edge *>()(edge);
-        size_t from_hash = std::hash<Node *>()(edge->getFrom());
-        size_t to_hash = std::hash<Node *>()(edge->getTo());
-
-        std::cout   << "{\n"
-                    << "    \"id\": \"e" << hash << "\",\n"
-                    << "    \"source\": \"n" << from_hash << "\",\n"
-                    << "    \"target\": \"n" << to_hash << "\"\n";
-        std::cout << "}\n";
-    }
-    std::cout << "] }";
 }
