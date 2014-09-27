@@ -1,0 +1,38 @@
+<html>
+<head>
+<style type="text/css">
+  #container {
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      position: absolute;
+  }
+</style>
+</head>
+<body>
+<div id="container"></div>
+<script src="sigma/sigma.min.js"></script>
+<script src="sigma/supervisor.js"></script>
+<script src="sigma/worker.js"></script>
+<script src="sigma/sigma.parsers.json.min.js"></script>
+<script>
+  var new_graph = new sigma({
+    container: 'container',
+    settings: {
+      defaultNodeColor: '#ec5148'
+    }
+  });
+  sigma.parsers.json('data.json',
+    new_graph,
+    function() {
+        new_graph.refresh();
+        new_graph.startForceAtlas2({ scalingRation: 10, gravity: 0.25});
+        setTimeout(function() {
+            new_graph.stopForceAtlas2();
+        }, 1000);
+    }
+  );
+</script>
+</body>
+</html>
