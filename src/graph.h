@@ -11,11 +11,9 @@ namespace FuckNamespaces {
             void addEdge(Node *from, Node *to, const std::string &label);
             void printEdges() const;
             void printNodes() const;
-            void printAliases() const;
-            void printSigmaGraphJS() const;
             const size_t getNodeCount();
             const size_t getEdgeCount();
-        private:
+        protected:
             EdgeInsertResult insertEdge(Edge *edge);
             NodeSet nodes;
             EdgeSet edges;
