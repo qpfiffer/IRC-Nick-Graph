@@ -18,6 +18,7 @@ namespace FuckNamespaces {
             void printAliases() const;
 
             EdgeInsertResult addEdge(Edge *edge);
+            const std::string nodeID() const;
         private:
             std::string name;
             EdgeSet edges;

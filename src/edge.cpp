@@ -36,21 +36,20 @@ const std::string Edge::toString() const {
 
     // The 4 here is two spaces, a \n and a null-terminator.
     const size_t buf_size = from_name.size() + my_val.size() + to_name.size() + 4;
+
     char buf[buf_size];
-    memset(buf, '\0', buf_size);
-    std::snprintf(buf, buf_size, "%s %s %s\n", from_name.c_str(), my_val.c_str(), to_name.c_str());
+    assert(memset(buf, '\0', buf_size) == buf);
+
+    const int ret = snprintf(buf, buf_size, "%s %s %s\n",
+            from_name.c_str(), my_val.c_str(), to_name.c_str());
+    assert(ret > 0);
 
     return std::string(buf);
 }
 
 bool Edge::operator==(const Edge &other) const {
-    std::stringstream my_stream;
-    my_stream << *this;
-    std::string my_str = my_stream.str();
-
-    std::stringstream other_stream;
-    other_stream << other;
-    std::string other_str = other_stream.str();
+    std::string my_str = this->toString();
+    std::string other_str = other.toString();
 
     return my_str == other_str;
 }

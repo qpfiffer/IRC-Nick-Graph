@@ -27,42 +27,56 @@ class AliasGraph: public Graph {
             }
         }
 
-    void printSigmaGraphJS() const {
-        std::cout   << "{ \"nodes\": [";
-        for (auto it = nodes.begin(); it != nodes.end(); it++) {
-            if (it != nodes.begin())
-                std::cout << ",";
-            Node *node = *it;
-            size_t hash = std::hash<Node *>()(node);
-            std::string replaced = node->getName();
-            std::replace(replaced.begin(), replaced.end(), '\\', ' ');
-            std::replace(replaced.begin(), replaced.end(), '\t', ' ');
-            std::replace(replaced.begin(), replaced.end(), '"', '\'');
-            std::cout   << "{\n"
-                        << "    \"id\": \"n" << hash << "\",\n"
-                        << "    \"label\": \"" << replaced << "\",\n"
-                        << "    \"x\": " << hash % 431 << ",\n"
-                        << "    \"y\": " << hash % 467 << ",\n"
-                        << "    \"size\": 0.2\n"
-                        << "}\n";
-        }
-        std::cout << "], \"edges\": [ \n";
-        for (auto it = edges.begin(); it != edges.end(); it++) {
-            if (it != edges.begin())
-                std::cout << ",";
-            Edge *edge = *it;
-            size_t hash = std::hash<Edge *>()(edge);
-            size_t from_hash = std::hash<Node *>()(edge->getFrom());
-            size_t to_hash = std::hash<Node *>()(edge->getTo());
+        void printCSV() const {
+            int nodes_fd = open("/tmp/nodes.csv", O_WRONLY);
+            for (auto it = nodes.begin(); it != nodes.end(); it++) {
+            }
+            close(nodes_fd);
 
-            std::cout   << "{\n"
-                        << "    \"id\": \"e" << hash << "\",\n"
-                        << "    \"source\": \"n" << from_hash << "\",\n"
-                        << "    \"target\": \"n" << to_hash << "\"\n";
-            std::cout << "}\n";
+            for (auto it = edges.begin(); it != edges.end(); it++) {
+            }
         }
-        std::cout << "] }";
-    }
+
+        void printSigmaGraphJS() const {
+            std::cout   << "{ \"nodes\": [";
+            for (auto it = nodes.begin(); it != nodes.end(); it++) {
+                if (it != nodes.begin())
+                    std::cout << ",";
+                Node *node = *it;
+
+                // Get some stuff that we're going to print
+                size_t hash = std::hash<Node *>()(node);
+                std::string node_id = node->nodeID();
+                std::string replaced = node->getName();
+
+                // Replace some stuff for JSON's sake
+                std::replace(replaced.begin(), replaced.end(), '\\', ' ');
+                std::replace(replaced.begin(), replaced.end(), '\t', ' ');
+                std::replace(replaced.begin(), replaced.end(), '"', '\'');
+
+                std::cout   << "{\n"
+                            << "    \"id\": \"" << node_id << "\",\n"
+                            << "    \"label\": \"" << replaced << "\",\n"
+                            << "    \"x\": " << hash % 431 << ",\n"
+                            << "    \"y\": " << hash % 467 << ",\n"
+                            << "    \"size\": " << hash % 25 << "\n"
+                            << "}\n";
+            }
+            std::cout << "], \"edges\": [ \n";
+            for (auto it = edges.begin(); it != edges.end(); it++) {
+                if (it != edges.begin())
+                    std::cout << ",";
+                Edge *edge = *it;
+                size_t hash = std::hash<Edge *>()(edge);
+
+                std::cout   << "{\n"
+                            << "    \"id\": \"e" << hash << "\",\n"
+                            << "    \"source\": \"" << edge->getFrom()->nodeID() << "\",\n"
+                            << "    \"target\": \"" << edge->getTo()->nodeID() << "\"\n";
+                std::cout << "}\n";
+            }
+            std::cout << "] }";
+        }
 };
 
 StringToSizeT read_line(const char *buf, const size_t offset) {

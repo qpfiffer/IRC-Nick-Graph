@@ -27,6 +27,18 @@ const size_t Node::getEdgeCount() const {
     return this->edges.size();
 }
 
+const std::string Node::nodeID() const {
+    const size_t buf_size = 32;
+
+    char buf[buf_size]; // 32 should be enough for anybody
+    assert(memset(buf, '\0', buf_size) == buf);
+
+    const size_t hash = std::hash<Node *>()(this);
+    assert(snprintf(buf, buf_size, "n%zu", hash) > 0);
+
+    return std::string(buf);
+}
+
 EdgeInsertResult Node::addEdge(Edge *edge) {
     //std::cout << "Adding edge " << edge << "\n";
     return this->edges.insert(edge);
