@@ -16,6 +16,7 @@
 <script src="sigma/supervisor.js"></script>
 <script src="sigma/worker.js"></script>
 <script src="sigma/sigma.parsers.json.min.js"></script>
+<script src="sigma/sigma.plugins.relativeSize.js"></script>
 <script>
   var new_graph = new sigma({
     container: 'container',
@@ -27,10 +28,16 @@
     new_graph,
     function() {
         new_graph.refresh();
-        new_graph.startForceAtlas2({ scalingRation: 10, gravity: 0.25});
+        sigma.plugins.relativeSize(new_graph, 20);
+        new_graph.startForceAtlas2({
+            scalingRation: 10,
+            //adjustSizes: true,
+            gravity: 0.25
+        });
         setTimeout(function() {
             new_graph.stopForceAtlas2();
-        }, 1000);
+        }, 3000);
+        new_graph.refresh();
     }
   );
 </script>
