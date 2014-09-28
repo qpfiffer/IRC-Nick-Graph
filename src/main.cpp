@@ -17,9 +17,8 @@ class AliasGraph: public Graph {
             for (auto it = nodes.begin(); it != nodes.end(); it++) {
                 FuckNamespaces::Node *node = *it;
                 if (node->getEdgeCount() > 0) {
-                    printf("%s has the following %zu aliases:\n",
-                            node->getName().c_str(),
-                            node->getEdgeCount());
+                    std::cout   << node->getName() << " has the following "
+                                << node->getEdgeCount() << " aliases:\n";
                     node->printAliases();
                 }
             }
@@ -66,7 +65,6 @@ AliasGraph *parse(const char *mmapd_log_file, const size_t length) {
                     break;
                 to_graph += *it;
             }
-            //printf("Joined: %s\n", to_graph.c_str());
             Node new_person(to_graph);
 
             const size_t room_offset = joined + std::strlen(" has joined ");
@@ -114,36 +112,62 @@ AliasGraph *parse(const char *mmapd_log_file, const size_t length) {
     return king;
 }
 
-int main(int argc, char *argv[]) {
-    if (argc < 2)
-        return 1;
+void usage(const char *program_name) {
+    std::cout   << program_name << " <output_type> <logfile>\n\n"
+                << "Where <output_type> is one of the following:\n\n"
+                << "\tgephi       - Outputs /tmp/nodes.csv and /tmp/edges.csv for use with the Gephi graph program.\n"
+                << "\tsigmajs     - Outputs a JSON encoded graph for use with the sigma.js graphing library.\n"
+                << "\taliases     - Simply prints aliases and joins to STDOUT. Filters out non-aliased users.\n"
+                << "\tnodes       - Prints all nodes to stdout.\n"
+                << "\tedges       - Prints all edges to stdout.\n";
+}
 
-    int log_file = open(argv[1], O_RDONLY);
-    //printf("Opening %s\n", argv[1]);
+int main(int argc, char *argv[]) {
+    if (argc < 3) {
+        usage(argv[0]);
+        return 1;
+    }
+
+    const std::string option = argv[1];
+    const char *logfile = argv[2];
+
+    int log_file = open(logfile, O_RDONLY);
     if (log_file < 0) {
-        printf("Could not open log file.\n");
+        std::cout << "Could not open log file.\n";
         return 1;
     }
 
     struct stat sb = {0};
     if (fstat(log_file, &sb) == -1) {
-        printf("Could not get filesize.");
+        std::cout << "Could not get filesize.";
         return -1;
     }
 
     void *mmapd_log_file = mmap(NULL, sb.st_size, PROT_READ, MAP_SHARED, log_file, 0);
+
+    // Parse the log file
     madvise(mmapd_log_file, sb.st_size, MADV_SEQUENTIAL | MADV_WILLNEED);
     AliasGraph *king = parse((const char *)mmapd_log_file, sb.st_size);
-    std::cerr   << "Parsed. Have " << king->getNodeCount() << " nodes and "
-                << king->getEdgeCount() << " edges.\n";
-    //king->printNodes();
-    //king->printEdges();
-    //king->printAliases();
-    //king->printSigmaGraphJS();
-    king->printCSV();
 
+    // We're done now
     munmap(mmapd_log_file, sb.st_size);
     close(log_file);
+
+    std::cerr   << "Parsed. Have " << king->getNodeCount() << " nodes and "
+                << king->getEdgeCount() << " edges.\n";
+
+    if ("gephi" == option) {
+        king->printCSV();
+    } else if ("sigmajs" == option) {
+        king->printSigmaGraphJS();
+    } else if ("aliases" == option) {
+        king->printAliases();
+    } else if ("nodes" == option) {
+        king->printNodes();
+    } else if ("edges" == option) {
+        king->printEdges();
+    }
+
     delete king;
 
     return 0;

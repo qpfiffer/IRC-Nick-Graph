@@ -13,4 +13,4 @@ clean:
 	rm $(NAME)
 
 test: all
-	./$(NAME) log.txt
+	./$(NAME) aliases log.txt
