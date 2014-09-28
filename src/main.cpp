@@ -134,7 +134,8 @@ int main(int argc, char *argv[]) {
     void *mmapd_log_file = mmap(NULL, sb.st_size, PROT_READ, MAP_SHARED, log_file, 0);
     madvise(mmapd_log_file, sb.st_size, MADV_SEQUENTIAL | MADV_WILLNEED);
     AliasGraph *king = parse((const char *)mmapd_log_file, sb.st_size);
-    //printf("Parsed. Have %zu nodes and %zu edges.\n", king->getNodeCount(), king->getEdgeCount());
+    std::cerr   << "Parsed. Have " << king->getNodeCount() << " nodes and "
+                << king->getEdgeCount() << " edges.\n";
     //king->printNodes();
     //king->printEdges();
     //king->printAliases();

@@ -112,7 +112,7 @@ void Graph::printCSV() const {
 
     int edges_fd = open("/tmp/edges.csv", O_RDWR | O_CREAT, S_IWUSR | S_IRUSR);
     assert(nodes_fd > 0);
-    const char schema_str[] = "fromID,toID,verb\n";
+    const char schema_str[] = "source,target,verb\n";
     write(nodes_fd, schema_str, strlen(schema_str));
     for (auto it = edges.begin(); it != edges.end(); it++) {
         char words[1024] = {0};
