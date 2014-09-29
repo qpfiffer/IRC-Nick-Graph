@@ -13,46 +13,37 @@ namespace TST {
             bool insert(const std::string &key, T new_value) {
                 const char *iterable_str = key.c_str();
 
-                if(!root) {
-                    root = new tst_node(iterable_str[0]);
-                }
-
                 // Wish we had proper recursion...
-                tst_node *current_node = root;
-                for(unsigned int i = 0; i < key.size(); i++) {
-                    char current_char = iterable_str[i];
-                    if (current_char < current_node->node_char) {
-                        if (current_node->lokid == nullptr) {
-                            tst_node *new_node = new tst_node(iterable_str[0]);
-                            current_node->lokid = new_node;
-                        }
-                        current_node = current_node->lokid;
-                    } else if (current_char == current_node->node_char) {
-                        if (current_node->eqkid == nullptr) {
-                            tst_node *new_node = new tst_node(iterable_str[0]);
-                            current_node->eqkid = new_node;
-                        }
+                tst_node **current_node = &root;
+                char current_char = iterable_str[0];
+                unsigned int i = 0;
+                while(i < key.size()) {
+                    if (*current_node == nullptr) {
+                        *current_node = new tst_node(current_char);
+                        if (root == nullptr)
+                            root = *current_node;
+                    }
+                    current_char = iterable_str[++i];
 
+                    if (current_char < (*current_node)->node_char) {
+                        current_node = &((*current_node)->lokid);
+                    } else if (current_char == (*current_node)->node_char) {
                         // Is this the last area?
                         bool is_last = i == key.size() - 1;
                         if (!is_last) {
-                            current_node = current_node->eqkid;
+                            current_node = &((*current_node)->eqkid);
                         } else {
-                            if(current_node->is_value)
+                            if((*current_node)->is_value)
                                 return false;
 
-                            current_node->is_value = true;
-                            current_node->value = new_value;
+                            (*current_node)->is_value = true;
+                            (*current_node)->value = new_value;
 
                             this->node_count++;
                             return true;
                         }
                     } else { // current_char > current_node->node_char
-                        if (current_node->hikid == nullptr) {
-                            tst_node *new_node = new tst_node(iterable_str[0]);
-                            current_node->hikid = new_node;
-                        }
-                        current_node = current_node->hikid;
+                        current_node = &((*current_node)->hikid);
                     }
                 }
 

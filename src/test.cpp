@@ -18,6 +18,9 @@ int test_can_use_tst_tree() {
     assert(integer_set.get("alkjsd") == nullptr);
     assert(integer_set.get("t") == nullptr);
 
+    int new_val = 129380830;
+    assert(integer_set.insert("abcdefg", new_val));
+
     return 0;
 }
 
