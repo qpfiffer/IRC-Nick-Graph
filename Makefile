@@ -1,19 +1,8 @@
-FLAGS=-std=c++0x -g3 -O2 -Wall
-CC=clang++
-NAME=nick_normalize
+NAME=agdyne
+ERLFLAGS=-smp -W1 -Werror -b beam
+ERLC=erlc
 
-%.o: ./src/%.cpp
-	$(CC) $(FLAGS) -c $<
+%.beam: ./src/%.erl
+	$(ERLC) $(ERLFLAGS) $<
 
-all: test nick_graph
-
-test: test.o
-	$(CC) $(FLAGS) -o test_$(NAME) $^
-
-nick_graph: tst_set.o common.o edge.o node.o graph.o main.o
-	$(CC) $(FLAGS) -o $(NAME) $^
-
-clean:
-	rm *.o
-	rm $(NAME)
-	rm test_$(NAME)
+all:
