@@ -5,12 +5,12 @@ NAME=nick_normalize
 %.o: ./src/%.cpp
 	$(CC) $(FLAGS) -c $<
 
-all: common.o edge.o node.o graph.o main.o
+test: test.o
+	$(CC) $(FLAGS) -o test_$(NAME) $^
+
+all: test tst_set.o common.o edge.o node.o graph.o main.o
 	$(CC) $(FLAGS) -o $(NAME) $^
 
 clean:
 	rm *.o
 	rm $(NAME)
-
-test: all
-	./$(NAME) aliases log.txt
