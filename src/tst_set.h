@@ -74,7 +74,9 @@ namespace TST {
                     } else if (key_str[i] == node->node_char) {
                         bool is_last = i == key.size() - 1;
                         if (is_last) {
-                            return &(node->value);
+                            if (node->is_value)
+                                return &(node->value);
+                            return nullptr;
                         } else {
                             node = node->eqkid;
                         }

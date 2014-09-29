@@ -10,8 +10,14 @@ int test_can_use_tst_tree() {
     assert(integer_set.empty());
     assert(integer_set.insert("test", val));
     assert(!integer_set.empty());
+
     int *returned = integer_set.get("test");
     assert(*returned == val);
+
+    assert(integer_set.get("test2") == nullptr);
+    assert(integer_set.get("alkjsd") == nullptr);
+    assert(integer_set.get("t") == nullptr);
+
     return 0;
 }
 
