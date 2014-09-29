@@ -1,33 +1,73 @@
 #pragma once
+#include <cassert>
+#include <cstring>
 #include <string>
 
 namespace TST {
     template<typename T>
     class set {
         public:
-            set<t>(): root(nullptr), node_count(0) {}
+            set(): root(nullptr), node_count(0) {}
             // Inserts a new value into the tree with key *key*.
             // Returns whether or not the value was actually inserted.
             bool insert(const std::string &key, T new_value) {
-                bool inserted = false;
-                char iterable_str[key.size()] = key.c_str();
+                char iterable_str[key.size()];
+                assert(memset(iterable_str, '\0', key.size()) == iterable_str);
+                assert(strncpy(iterable_str, key.c_str(), key.size()) == iterable_str);
 
                 if(!root) {
                     root = new tst_node(iterable_str[0]);
                 }
 
+                // Wish we had proper recursion...
+                tst_node *current_node = root;
                 for(unsigned int i = 0; i < key.size(); i++) {
+                    char current_char = iterable_str[i];
+                    if (current_char < current_node->node_char) {
+                        if (current_node->lokid == nullptr) {
+                            tst_node *new_node = new tst_node(iterable_str[0]);
+                            current_node->lokid = new_node;
+                        }
+                        current_node = current_node->lokid;
+                    } else if (current_char == current_node->node_char) {
+                        if (current_node->eqkid == nullptr) {
+                            tst_node *new_node = new tst_node(iterable_str[0]);
+                            current_node->eqkid = new_node;
+                        }
+
+                        // Is this the last area?
+                        bool is_last = i == key.size() - 1;
+                        if (!is_last) {
+                            current_node = current_node->eqkid;
+                        } else {
+                            if(!current_node->is_value)
+                                return false;
+
+                            current_node->is_value = true;
+                            current_node->value = new_value;
+
+                            this->node_count++;
+                            return true;
+                        }
+                    } else { // current_char > current_node->node_char
+                        if (current_node->hikid == nullptr) {
+                            tst_node *new_node = new tst_node(iterable_str[0]);
+                            current_node->hikid = new_node;
+                        }
+                        current_node = current_node->hikid;
+                    }
                 }
 
-                return inserted;
-            }
-
-            bool find(const std::string key) const {
+                // Shouldn't be able to get here.
                 return false;
             }
 
+            T* get(const std::string key) const {
+                return nullptr;
+            }
+
             bool empty() const {
-                return (node_count > 0);
+                return node_count == 0;
             }
         private:
             struct tst_node {

@@ -6,9 +6,11 @@
 int test_can_use_tst_tree() {
     TST::set<int> integer_set;
 
+    int val = 1;
     assert(integer_set.empty());
-    assert(integer_set.insert("test", 1));
+    assert(integer_set.insert("test", val));
     assert(!integer_set.empty());
+    assert(integer_set.get("test") == &val);
     return 0;
 }
 
