@@ -3,11 +3,23 @@
 
 namespace TST {
     template<typename T>
-    class map {
+    class set {
         public:
-            bool insert(const std::string key, T new_value) {
-                this->node_count++;
-                return false;
+            set<t>(): root(nullptr), node_count(0) {}
+            // Inserts a new value into the tree with key *key*.
+            // Returns whether or not the value was actually inserted.
+            bool insert(const std::string &key, T new_value) {
+                bool inserted = false;
+                char iterable_str[key.size()] = key.c_str();
+
+                if(!root) {
+                    root = new tst_node(iterable_str[0]);
+                }
+
+                for(unsigned int i = 0; i < key.size(); i++) {
+                }
+
+                return inserted;
             }
 
             bool find(const std::string key) const {
@@ -19,12 +31,17 @@ namespace TST {
             }
         private:
             struct tst_node {
-                tst_node():
+                tst_node(char c):
                     lokid(nullptr), eqkid(nullptr), hikid(nullptr),
-                    node_char('\0'), is_value(false) {};
+                    node_char(c), is_value(false) {}
+
+                tst_node(char c, T value):
+                    lokid(nullptr), eqkid(nullptr), hikid(nullptr),
+                    node_char(c), is_value(true), value(value) {}
+
                 tst_node(tst_node &other):
                     lokid(other.lokid), eqkid(other.eqkid), hikid(other.hikid),
-                    node_char(other.node_char), is_value(other.is_value) {};
+                    node_char(other.node_char), is_value(other.is_value) {}
 
                 tst_node *lokid;
                 tst_node *eqkid;

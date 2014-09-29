@@ -4,10 +4,11 @@
 // Simple tests.
 
 int test_can_use_tst_tree() {
-    TST::map<int> integer_map;
+    TST::set<int> integer_set;
 
-    assert(integer_map.empty());
-    assert(integer_map.insert("test", 1));
+    assert(integer_set.empty());
+    assert(integer_set.insert("test", 1));
+    assert(!integer_set.empty());
     return 0;
 }
 
