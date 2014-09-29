@@ -11,9 +11,7 @@ namespace TST {
             // Inserts a new value into the tree with key *key*.
             // Returns whether or not the value was actually inserted.
             bool insert(const std::string &key, T new_value) {
-                char iterable_str[key.size()];
-                assert(memset(iterable_str, '\0', key.size()) == iterable_str);
-                assert(strncpy(iterable_str, key.c_str(), key.size()) == iterable_str);
+                const char *iterable_str = key.c_str();
 
                 if(!root) {
                     root = new tst_node(iterable_str[0]);
@@ -40,7 +38,7 @@ namespace TST {
                         if (!is_last) {
                             current_node = current_node->eqkid;
                         } else {
-                            if(!current_node->is_value)
+                            if(current_node->is_value)
                                 return false;
 
                             current_node->is_value = true;
@@ -63,6 +61,27 @@ namespace TST {
             }
 
             T* get(const std::string key) const {
+                if (!root)
+                    return nullptr;
+
+                tst_node *node = this->root;
+                const char *key_str = key.c_str();
+                for (unsigned int i = 0; i < key.size(); i++) {
+                    if (!node)
+                        break;
+                    if (key_str[i] < node->node_char) {
+                        node = node->lokid;
+                    } else if (key_str[i] == node->node_char) {
+                        bool is_last = i == key.size() - 1;
+                        if (is_last) {
+                            return &(node->value);
+                        } else {
+                            node = node->eqkid;
+                        }
+                    } else {
+                        node = node->hikid;
+                    }
+                }
                 return nullptr;
             }
 

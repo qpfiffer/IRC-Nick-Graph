@@ -10,7 +10,8 @@ int test_can_use_tst_tree() {
     assert(integer_set.empty());
     assert(integer_set.insert("test", val));
     assert(!integer_set.empty());
-    assert(integer_set.get("test") == &val);
+    int *returned = integer_set.get("test");
+    assert(*returned == val);
     return 0;
 }
 
