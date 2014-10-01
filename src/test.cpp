@@ -21,6 +21,12 @@ int test_can_use_tst_tree() {
     int new_val = 129380830;
     assert(integer_map.insert("abcdefg", new_val));
 
+    int new_val_again = 1928392;
+    assert(integer_map.insert("test2", new_val_again));
+
+    returned = integer_map.get("test2");
+    assert(*returned == new_val_again);
+
     return 0;
 }
 

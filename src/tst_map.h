@@ -1,6 +1,8 @@
 #pragma once
 #include <cassert>
 #include <cstring>
+
+#include <iterator>
 #include <string>
 
 namespace TST {
@@ -44,6 +46,10 @@ namespace TST {
                     }
                 }
                 return nullptr;
+            }
+
+            T *begin() {
+                return &this->root;
             }
 
             bool empty() const {

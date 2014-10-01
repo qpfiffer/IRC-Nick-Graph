@@ -17,7 +17,7 @@ namespace FuckNamespaces {
             const size_t getEdgeCount();
         protected:
             EdgeInsertResult insertEdge(Edge *edge);
-            NodeSet nodes;
+            NodeMap nodes;
             EdgeSet edges;
     };
 }

@@ -52,5 +52,5 @@ namespace FuckNamespaces {
 
     // Set of edges, set of nodes.
     typedef std::unordered_set<Edge *, std::unordered_set<Edge *>::hasher, EdgeEqualTo> EdgeSet;
-    typedef std::unordered_set<Node *, std::unordered_set<Node *>::hasher, NodeEqualTo> NodeSet;
+    typedef TST::map<Node *> NodeMap;
 }
