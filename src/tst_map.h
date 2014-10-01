@@ -11,7 +11,12 @@ namespace TST {
             // Inserts a new value into the tree with key *key*.
             // Returns whether or not the value was actually inserted.
             bool insert(const std::string &key, T new_value) {
-                return _insert(this->root, nullptr, key, new_value);
+                if (this->root == nullptr) {
+                    tst_node *new_node  = new tst_node(key[0]);
+                    this->root = new_node;
+                }
+
+                return _insert(this->root, key, new_value);
             }
 
             T* get(const std::string key) const {
@@ -67,22 +72,19 @@ namespace TST {
                 T value;
             };
 
-            bool _insert(tst_node *start, tst_node *current_node,
+            bool _insert(tst_node*& current_node,
                          const std::string &key, T val) {
                 const char current_char = key[0];
 
                 if (current_node == nullptr) {
                     current_node = new tst_node(current_char);
-
-                    if (start == nullptr)
-                        start = current_node;
                 }
 
                 if (current_char < current_node->node_char) {
-                    return _insert(start, current_node->lokid, key, val);
+                    return _insert(current_node->lokid, key, val);
                 } else if (current_char == current_node->node_char) {
                     if (key.size() > 1) {
-                        return _insert(start, current_node->eqkid,
+                        return _insert(current_node->eqkid,
                                 key.substr(1, key.size()), val);
                     } else {
                         if (current_node->is_value) // Duplicate?
@@ -93,7 +95,7 @@ namespace TST {
                         return true;
                     }
                 } else {
-                    return _insert(start, current_node->hikid, key, val);
+                    return _insert(current_node->hikid, key, val);
                 }
             }
 
