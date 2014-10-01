@@ -10,7 +10,7 @@ all: test nick_graph
 test: test.o
 	$(CC) $(FLAGS) -o test_$(NAME) $^
 
-nick_graph: tst_set.o common.o edge.o node.o graph.o main.o
+nick_graph: tst_map.o common.o edge.o node.o graph.o main.o
 	$(CC) $(FLAGS) -o $(NAME) $^
 
 clean:

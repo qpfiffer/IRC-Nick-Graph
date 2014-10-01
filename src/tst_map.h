@@ -5,50 +5,13 @@
 
 namespace TST {
     template<typename T>
-    class set {
+    class map {
         public:
-            set(): root(nullptr), node_count(0) {}
+            map(): root(nullptr), node_count(0) {}
             // Inserts a new value into the tree with key *key*.
             // Returns whether or not the value was actually inserted.
             bool insert(const std::string &key, T new_value) {
-                const char *iterable_str = key.c_str();
-
-                // Wish we had proper recursion...
-                tst_node **current_node = &root;
-                char current_char = iterable_str[0];
-                unsigned int i = 0;
-                while(i < key.size()) {
-                    if (*current_node == nullptr) {
-                        *current_node = new tst_node(current_char);
-                        if (root == nullptr)
-                            root = *current_node;
-                    }
-                    current_char = iterable_str[++i];
-
-                    if (current_char < (*current_node)->node_char) {
-                        current_node = &((*current_node)->lokid);
-                    } else if (current_char == (*current_node)->node_char) {
-                        // Is this the last area?
-                        bool is_last = i == key.size() - 1;
-                        if (!is_last) {
-                            current_node = &((*current_node)->eqkid);
-                        } else {
-                            if((*current_node)->is_value)
-                                return false;
-
-                            (*current_node)->is_value = true;
-                            (*current_node)->value = new_value;
-
-                            this->node_count++;
-                            return true;
-                        }
-                    } else { // current_char > current_node->node_char
-                        current_node = &((*current_node)->hikid);
-                    }
-                }
-
-                // Shouldn't be able to get here.
-                return false;
+                return _insert(this->root, nullptr, key, new_value);
             }
 
             T* get(const std::string key) const {
@@ -103,6 +66,36 @@ namespace TST {
 
                 T value;
             };
+
+            bool _insert(tst_node *start, tst_node *current_node,
+                         const std::string &key, T val) {
+                const char current_char = key[0];
+
+                if (current_node == nullptr) {
+                    current_node = new tst_node(current_char);
+
+                    if (start == nullptr)
+                        start = current_node;
+                }
+
+                if (current_char < current_node->node_char) {
+                    return _insert(start, current_node->lokid, key, val);
+                } else if (current_char == current_node->node_char) {
+                    if (key.size() > 1) {
+                        return _insert(start, current_node->eqkid,
+                                key.substr(1, key.size()), val);
+                    } else {
+                        if (current_node->is_value) // Duplicate?
+                            return false;
+                        current_node->is_value = true;
+                        current_node->value = val;
+                        this->node_count++;
+                        return true;
+                    }
+                } else {
+                    return _insert(start, current_node->hikid, key, val);
+                }
+            }
 
             tst_node *root;
             unsigned int node_count;

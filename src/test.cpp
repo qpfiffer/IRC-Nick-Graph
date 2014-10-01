@@ -1,25 +1,25 @@
 #include <cassert>
 
-#include "tst_set.h"
+#include "tst_map.h"
 // Simple tests.
 
 int test_can_use_tst_tree() {
-    TST::set<int> integer_set;
+    TST::map<int> integer_map;
 
     int val = 1;
-    assert(integer_set.empty());
-    assert(integer_set.insert("test", val));
-    assert(!integer_set.empty());
+    assert(integer_map.empty());
+    assert(integer_map.insert("test", val));
+    assert(!integer_map.empty());
 
-    int *returned = integer_set.get("test");
+    int *returned = integer_map.get("test");
     assert(*returned == val);
 
-    assert(integer_set.get("test2") == nullptr);
-    assert(integer_set.get("alkjsd") == nullptr);
-    assert(integer_set.get("t") == nullptr);
+    assert(integer_map.get("test2") == nullptr);
+    assert(integer_map.get("alkjsd") == nullptr);
+    assert(integer_map.get("t") == nullptr);
 
     int new_val = 129380830;
-    assert(integer_set.insert("abcdefg", new_val));
+    assert(integer_map.insert("abcdefg", new_val));
 
     return 0;
 }
