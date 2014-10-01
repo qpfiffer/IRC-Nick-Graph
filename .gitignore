@@ -3,3 +3,4 @@
 *.swo
 log.txt
 *.beam
+erl_crash.dump
