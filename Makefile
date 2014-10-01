@@ -1,8 +1,8 @@
 NAME=agdyne
-ERLFLAGS=-smp -W1 -Werror -b beam
+ERLFLAGS=-smp -W1 -Werror -b beam -o ./ebin/
 ERLC=erlc
 
-%.beam: ./src/%.erl
+./ebin/%.beam: ./src/%.erl
 	$(ERLC) $(ERLFLAGS) $<
 
-all:
+all: ./ebin/agdyne_main.beam
