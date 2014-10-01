@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+
+exec erl -noshell -sname agdyne +K true -smp enable -pa ./ebin -run agdyne_main main -s init stop
