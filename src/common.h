@@ -14,6 +14,8 @@
 #include <unordered_set>
 #include <vector>
 
+#include "tst_map.h"
+
 
 namespace FuckNamespaces {
     // Forward declarations because C++.

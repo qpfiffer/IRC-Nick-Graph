@@ -22,12 +22,22 @@ Graph::~Graph() {
 }
 
 NodeInsertResult Graph::addNode(Node *node) {
-    if (this->nodes.find(node) == this->nodes.end()) {
-        Node *copiedNode = new Node(node);
-        return this->nodes.insert(copiedNode);
+    Node *copiedNode = node;
+    const std::string node_name = node->getName();
+
+    if (nodes.find(node) == nodes.end()) {
+        if (node_refs.get(node_name) != nullptr) {
+            const bool mismatched = node_refs.get(node_name);
+        }
     }
 
-    return this->nodes.insert(node);
+    if (node_refs.get(node_name) == nullptr) {
+        copiedNode = new Node(node);
+        if (!node_refs.insert(node_name, copiedNode))
+            node_refs.get(node_name);
+    }
+
+    return this->nodes.insert(copiedNode);
 }
 
 EdgeInsertResult Graph::insertEdge(Edge *edge) {

@@ -17,6 +17,12 @@ namespace FuckNamespaces {
             const size_t getEdgeCount();
         protected:
             EdgeInsertResult insertEdge(Edge *edge);
+
+            // Ternary search trees to quickly find nodes/edges. They
+            // simply hold pointers to nodes/edges in the set.
+            TST::map<Node *> node_refs;
+            TST::map<Edge *> edge_refs;
+
             NodeSet nodes;
             EdgeSet edges;
     };
