@@ -3,6 +3,7 @@
 #include <cstring>
 
 #include <iterator>
+#include <stack>
 #include <string>
 
 namespace TST {
@@ -10,6 +11,7 @@ namespace TST {
     class map {
         public:
             map(): root(nullptr), node_count(0) {}
+            ~map() { this->_clean(); }
             // Inserts a new value into the tree with key *key*.
             // Returns whether or not the value was actually inserted.
             bool insert(const std::string &key, T new_value) {
@@ -100,6 +102,28 @@ namespace TST {
                     }
                 } else {
                     return _insert(current_node->hikid, key, val);
+                }
+            }
+
+            void _clean() {
+                std::stack<tst_node *> to_clean;
+                to_clean.push(this->root);
+
+                while(!to_clean.empty()) {
+                    tst_node *clean_me = to_clean.top();
+                    to_clean.pop();
+
+                    if (clean_me == nullptr)
+                        continue;
+
+                    if (clean_me->lokid)
+                        to_clean.push(clean_me->lokid);
+                    if (clean_me->eqkid)
+                        to_clean.push(clean_me->eqkid);
+                    if (clean_me->hikid)
+                        to_clean.push(clean_me->hikid);
+
+                    delete clean_me;
                 }
             }
 
