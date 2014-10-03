@@ -25,33 +25,24 @@ NodeInsertResult Graph::addNode(Node *node) {
     Node *copiedNode = node;
     const std::string node_name = node->getName();
 
-    if (nodes.find(node) == nodes.end()) {
-        if (node_refs.get(node_name) != nullptr) {
-            const bool mismatched = node_refs.get(node_name);
-            std::cerr << "Mismatched find and get.\n";
-        }
-    }
-
-    if (node_refs.get(node_name) == nullptr) {
+    if (!node_refs.get(node_name)) {
         copiedNode = new Node(node);
-        const unsigned int insert_before = node_refs.count();
-        if (!node_refs.insert(node_name, copiedNode)) {
-            const unsigned int insert_after = node_refs.count();
-            node_refs.get(node_name);
-            std::cerr << "Mismatched get and insert.\n";
-        }
+        node_refs.insert(node_name, copiedNode);
     }
 
     return this->nodes.insert(copiedNode);
 }
 
 EdgeInsertResult Graph::insertEdge(Edge *edge) {
-    if (this->edges.find(edge) == this->edges.end()) {
-        Edge *copied = new Edge(edge);
-        return this->edges.insert(copied);
+    Edge *copiedEdge = edge;
+    const std::string edge_name = edge->toString();
+
+    if (!edge_refs.get(edge_name)) {
+        copiedEdge = new Edge(edge);
+        edge_refs.insert(edge_name, copiedEdge);
     }
 
-    return this->edges.insert(edge);
+    return this->edges.insert(copiedEdge);
 }
 
 void Graph::addEdge(Node *from, Node *to, const std::string &label) {
