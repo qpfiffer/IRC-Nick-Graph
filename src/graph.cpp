@@ -28,13 +28,18 @@ NodeInsertResult Graph::addNode(Node *node) {
     if (nodes.find(node) == nodes.end()) {
         if (node_refs.get(node_name) != nullptr) {
             const bool mismatched = node_refs.get(node_name);
+            std::cerr << "Mismatched find and get.\n";
         }
     }
 
     if (node_refs.get(node_name) == nullptr) {
         copiedNode = new Node(node);
-        if (!node_refs.insert(node_name, copiedNode))
+        const unsigned int insert_before = node_refs.count();
+        if (!node_refs.insert(node_name, copiedNode)) {
+            const unsigned int insert_after = node_refs.count();
             node_refs.get(node_name);
+            std::cerr << "Mismatched get and insert.\n";
+        }
     }
 
     return this->nodes.insert(copiedNode);

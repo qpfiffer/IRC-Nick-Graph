@@ -13,39 +13,20 @@ namespace TST {
             // Inserts a new value into the tree with key *key*.
             // Returns whether or not the value was actually inserted.
             bool insert(const std::string &key, T new_value) {
+                assert(new_value != nullptr);
                 return _insert(this->root, key, new_value);
             }
 
             T* get(const std::string &key) const {
-                if (!root)
-                    return nullptr;
-
-                tst_node *node = this->root;
-                const char *key_str = key.c_str();
-                for (unsigned int i = 0; i < key.size(); i++) {
-                    if (!node)
-                        break;
-                    if (key_str[i] < node->node_char) {
-                        node = node->lokid;
-                    } else if (key_str[i] == node->node_char) {
-                        bool is_last = i == (key.size() - 1);
-                        if (is_last) {
-                            if (node->is_value == true) {
-                                return &(node->value);
-                            }
-                            return nullptr;
-                        } else {
-                            node = node->eqkid;
-                        }
-                    } else {
-                        node = node->hikid;
-                    }
-                }
-                return nullptr;
+                return _get(this->root, key);
             }
 
             T *begin() {
                 return &this->root;
+            }
+
+            const unsigned int count() const {
+                return this->node_count;
             }
 
             bool empty() const {
@@ -73,6 +54,27 @@ namespace TST {
 
                 T value;
             };
+
+            T* _get(tst_node *current_node, const std::string &key) const {
+                const char current_char = key[0];
+
+                if (current_node == nullptr)
+                    return nullptr;
+
+                if (current_char < current_node->node_char) {
+                    return _get(current_node->lokid, key);
+                } else if (current_char == current_node->node_char) {
+                    if (key.size() > 1) {
+                        return _get(current_node->eqkid, key.substr(1, key.size()));
+                    } else {
+                        if (!current_node->is_value)
+                            return nullptr;
+                        return &current_node->value;
+                    }
+                } else {
+                    return _get(current_node->hikid, key);
+                }
+            }
 
             bool _insert(tst_node*& current_node,
                          const std::string &key, T val) {
