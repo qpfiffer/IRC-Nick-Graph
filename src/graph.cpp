@@ -3,9 +3,16 @@
 #include "edge.h"
 #include "node.h"
 #include "graph.h"
+#include "tst_map.h"
 using namespace FuckNamespaces;
 
 Graph::~Graph() {
+    class delete_visitor: public TST::map<Node *>::map_cursor {
+        void visited() {
+            Node *node = this->get_node()->value;
+            delete node;
+        }
+    };
     while(!nodes.empty()) {
         auto it = nodes.begin();
         Node *node = *it;

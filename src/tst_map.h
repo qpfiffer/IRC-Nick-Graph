@@ -34,7 +34,8 @@ namespace TST {
             bool empty() const {
                 return node_count == 0;
             }
-        private:
+
+            // This is the structure we store internally
             struct tst_node {
                 tst_node(char c):
                     lokid(nullptr), eqkid(nullptr), hikid(nullptr),
@@ -56,6 +57,18 @@ namespace TST {
 
                 T value;
             };
+
+            // Inherit from this to something
+            class map_cursor {
+                public:
+                    virtual void visited() = 0;
+
+                    void set_node(tst_node *node) { this->current_node = node; }
+                    const tst_node *get_node() const { return this->current_node; }
+                private:
+                    tst_node *current_node;
+            };
+        private:
 
             T* _get(tst_node *current_node, const std::string &key) const {
                 const char current_char = key[0];
