@@ -68,6 +68,17 @@ namespace TST {
                 private:
                     tst_node *current_node;
             };
+
+            bool iterate(map_cursor &cursor, bool back = false) {
+                if (!this->root)
+                    return false;
+
+                tst_node *maximum = this->_max_node();
+                if (cursor->get_node() == maximum)
+                    return false;
+
+                return false;
+            }
         private:
 
             T* _get(tst_node *current_node, const std::string &key) const {
@@ -138,6 +149,11 @@ namespace TST {
 
                     delete clean_me;
                 }
+            }
+
+            inline tst_node *_max_node() {
+                tst_node *node 
+                while (
             }
 
             tst_node *root;

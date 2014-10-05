@@ -12,7 +12,10 @@ Graph::~Graph() {
             Node *node = this->get_node()->value;
             delete node;
         }
-    };
+    } del_cursor;
+
+    while(node_refs.iterate(del_cursor)) { }
+
     while(!nodes.empty()) {
         auto it = nodes.begin();
         Node *node = *it;
